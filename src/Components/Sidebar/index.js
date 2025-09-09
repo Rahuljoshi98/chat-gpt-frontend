@@ -1,6 +1,6 @@
 "use client";
-import * as React from "react";
 
+import * as React from "react";
 import { NavMain } from "./NavMain";
 import { NavProjects } from "./NavProjects";
 import { NavUser } from "./NavUser";
@@ -9,7 +9,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   GptsIcon,
@@ -19,6 +19,7 @@ import {
   NewProjectIcon,
   SoraIcon,
 } from "../Common/Icons";
+import { Columns2, Menu, PanelRightClose } from "lucide-react";
 
 // This is sample data.
 const data = {
@@ -77,10 +78,22 @@ const data = {
 };
 
 export function AppSidebar(props) {
+  const { toggleSidebar, state } = useSidebar();
+  console.log("state", state);
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <Logo />
+        <div className="flex justify-between items-center">
+          <div className={`${state == "expanded" ? "block" : "hidden"} p-2`}>
+            <Logo />
+          </div>
+          <div
+            onClick={toggleSidebar}
+            className="rounded-md p-2 cursor-pointer hover:bg-sidebar-accent"
+          >
+            <Columns2 className="h-5 w-5 text-white" />
+          </div>
+        </div>
       </SidebarHeader>
       <SidebarContent className={`gap-0`}>
         <NavMain navItems={data.navMainItems1} />
@@ -92,7 +105,6 @@ export function AppSidebar(props) {
       <SidebarFooter className={`border-t border-[#ffffff0d]`}>
         <NavUser user={data.user} />
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   );
 }
