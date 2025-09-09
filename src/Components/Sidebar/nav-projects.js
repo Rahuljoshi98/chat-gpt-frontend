@@ -50,7 +50,7 @@ export function NavProjects({ projects }) {
                 className="w-fit rounded-lg"
                 side={isMobile ? "bottom" : "right"}
                 align={isMobile ? "end" : "start"}
-                sideOffset={-20} // small horizontal gap from trigger
+                sideOffset={-20}
                 alignOffset={18}
               >
                 <DropdownMenuItem>

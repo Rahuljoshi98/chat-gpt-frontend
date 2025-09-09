@@ -44,9 +44,11 @@ export function NavMain({ navItems }) {
                 </SidebarMenuAction>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-48 rounded-lg"
+                className="w-fit rounded-lg"
                 side={isMobile ? "bottom" : "right"}
                 align={isMobile ? "end" : "start"}
+                sideOffset={-20}
+                alignOffset={18}
               >
                 <DropdownMenuItem>
                   <Folder className="w-4 h-4 text-muted-foreground" />
