@@ -1,9 +1,9 @@
 "use client";
 import * as React from "react";
 
-import { NavMain } from "./nav-main";
-import { NavProjects } from "./nav-projects";
-import { NavUser } from "./nav-user";
+import { NavMain } from "./NavMain";
+import { NavProjects } from "./NavProjects";
+import { NavUser } from "./NavUser";
 import {
   Sidebar,
   SidebarContent,
