@@ -1,58 +1,73 @@
 "use client";
-
-import { ChevronRight } from "lucide-react";
+import { Folder, Forward, MoreHorizontal, Trash2 } from "lucide-react";
 
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 import {
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
+  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
-export function NavMain({ items }) {
+export function NavMain({ navItems }) {
+  const { isMobile } = useSidebar();
+
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
-        {items.map((item) => (
-          <Collapsible
-            key={item.title}
-            asChild
-            defaultOpen={item.isActive}
-            className="group/collapsible"
-          >
-            <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarMenuSub>
-                  {item.items?.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
-                          <span>{subItem.title}</span>
-                        </a>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
-                </SidebarMenuSub>
-              </CollapsibleContent>
-            </SidebarMenuItem>
-          </Collapsible>
+        {navItems?.map((item) => (
+          <SidebarMenuItem key={item.name}>
+            <SidebarMenuButton asChild>
+              <a href={item.url} className="flex items-center gap-2">
+                <item.icon />
+                <span className="group-data-[collapsible=icon]:hidden text-[16px]">
+                  {item.name}
+                </span>
+              </a>
+            </SidebarMenuButton>
+
+            {/* Dropdown actions */}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="" asChild>
+                <SidebarMenuAction showOnHover className="">
+                  <MoreHorizontal />
+                  <span className="sr-only">More</span>
+                </SidebarMenuAction>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-48 rounded-lg"
+                side={isMobile ? "bottom" : "right"}
+                align={isMobile ? "end" : "start"}
+              >
+                <DropdownMenuItem>
+                  <Folder className="w-4 h-4 text-muted-foreground" />
+                  <span>Share</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Forward className="w-4 h-4 text-muted-foreground" />
+                  <span>Rename</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Trash2 className="w-4 h-4 text-muted-foreground" />
+                  <span>Archive</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Forward className="w-4 h-4 text-muted-foreground" />
+                  <span>Delete</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
         ))}
       </SidebarMenu>
     </SidebarGroup>
