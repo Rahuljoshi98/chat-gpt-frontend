@@ -1,6 +1,5 @@
 "use client";
 import * as React from "react";
-import { Frame, Map, PieChart } from "lucide-react";
 
 import { NavMain } from "./nav-main";
 import { NavProjects } from "./nav-projects";
@@ -32,17 +31,14 @@ const data = {
     {
       name: "Design Engineering",
       url: "#",
-      icon: Frame,
     },
     {
       name: "Sales & Marketing",
       url: "#",
-      icon: PieChart,
     },
     {
       name: "Travel",
       url: "#",
-      icon: Map,
     },
   ],
   navMainItems1: [

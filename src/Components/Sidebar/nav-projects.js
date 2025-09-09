@@ -1,5 +1,5 @@
 "use client";
-import { Folder, Forward, MoreHorizontal, Trash2 } from "lucide-react";
+import { Archive, MoreHorizontal, Pencil, Share, Trash2 } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -40,34 +40,34 @@ export function NavProjects({ projects }) {
 
             {/* Dropdown actions */}
             <DropdownMenu>
-              <DropdownMenuTrigger className="" asChild>
-                <SidebarMenuAction showOnHover className="">
+              <DropdownMenuTrigger className="ring-0" asChild>
+                <SidebarMenuAction showOnHover className="focus-visible:ring-0">
                   <MoreHorizontal />
                   <span className="sr-only">More</span>
                 </SidebarMenuAction>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-fit rounded-lg"
+                className="w-fit rounded-md bg-[#353535]"
                 side={isMobile ? "bottom" : "right"}
                 align={isMobile ? "end" : "start"}
                 sideOffset={-20}
                 alignOffset={18}
               >
                 <DropdownMenuItem>
-                  <Folder className="w-4 h-4 text-muted-foreground" />
+                  <Share className="w-4 h-4 text-muted-foreground" />
                   <span>Share</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Forward className="w-4 h-4 text-muted-foreground" />
+                  <Pencil className="w-4 h-4 text-muted-foreground" />
                   <span>Rename</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                  <Trash2 className="w-4 h-4 text-muted-foreground" />
+                  <Archive className="w-4 h-4 text-muted-foreground" />
                   <span>Archive</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Forward className="w-4 h-4 text-muted-foreground" />
+                <DropdownMenuItem className={`text-red-400 focus:text-red-400`}>
+                  <Trash2 className="w-4 h-4 text-red-400" />
                   <span>Delete</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>

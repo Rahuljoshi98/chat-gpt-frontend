@@ -1,18 +1,7 @@
 "use client";
-import { Folder, Forward, MoreHorizontal, Trash2 } from "lucide-react";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
 import {
   SidebarGroup,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
@@ -27,48 +16,15 @@ export function NavMain({ navItems }) {
         {navItems?.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
-              <a href={item.url} className="flex items-center gap-2">
-                <item.icon />
-                <span className="group-data-[collapsible=icon]:hidden text-[16px]">
-                  {item.name}
-                </span>
+              <a href={item.url} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <item.icon />
+                  <span className="group-data-[collapsible=icon]:hidden text-[16px]">
+                    {item.name}
+                  </span>
+                </div>
               </a>
             </SidebarMenuButton>
-
-            {/* Dropdown actions */}
-            <DropdownMenu>
-              <DropdownMenuTrigger className="" asChild>
-                <SidebarMenuAction showOnHover className="">
-                  <MoreHorizontal />
-                  <span className="sr-only">More</span>
-                </SidebarMenuAction>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-fit rounded-lg"
-                side={isMobile ? "bottom" : "right"}
-                align={isMobile ? "end" : "start"}
-                sideOffset={-20}
-                alignOffset={18}
-              >
-                <DropdownMenuItem>
-                  <Folder className="w-4 h-4 text-muted-foreground" />
-                  <span>Share</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Forward className="w-4 h-4 text-muted-foreground" />
-                  <span>Rename</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Trash2 className="w-4 h-4 text-muted-foreground" />
-                  <span>Archive</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Forward className="w-4 h-4 text-muted-foreground" />
-                  <span>Delete</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </SidebarMenuItem>
         ))}
       </SidebarMenu>

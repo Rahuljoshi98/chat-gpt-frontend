@@ -16,8 +16,8 @@ const Logo = () => {
 const NewChatIcon = () => {
   return (
     <svg
-      width="24"
-      height="24"
+      width="22"
+      height="22"
       viewBox="0 0 20 20"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
@@ -32,8 +32,8 @@ const NewChatIcon = () => {
 const LibraryIcon = () => {
   return (
     <svg
-      width="20"
-      height="20"
+      width="22"
+      height="22"
       viewBox="0 0 20 20"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
@@ -54,8 +54,8 @@ const LibraryIcon = () => {
 const SoraIcon = () => {
   return (
     <svg
-      width="20"
-      height="20"
+      width="22"
+      height="22"
       viewBox="0 0 20 20"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
@@ -71,8 +71,8 @@ const SoraIcon = () => {
 const GptsIcon = () => {
   return (
     <svg
-      width="20"
-      height="20"
+      width="22"
+      height="22"
       viewBox="0 0 20 20"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
