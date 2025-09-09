@@ -1,11 +1,6 @@
 "use client";
-
 import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
   CircleUserRound,
-  CreditCard,
   LifeBuoy,
   LogOut,
   Settings,
@@ -19,7 +14,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -29,7 +23,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
 
 export function NavUser({ user }) {
   const { isMobile } = useSidebar();

@@ -54,16 +54,16 @@ export function NavProjects({ projects }) {
                 alignOffset={18}
               >
                 <DropdownMenuItem>
-                  <Share className="w-4 h-4 text-muted-foreground" />
+                  <Share className="w-4 h-4 text-white" />
                   <span>Share</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Pencil className="w-4 h-4 text-muted-foreground" />
+                  <Pencil className="w-4 h-4 text-white" />
                   <span>Rename</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                  <Archive className="w-4 h-4 text-muted-foreground" />
+                  <Archive className="w-4 h-4 text-white" />
                   <span>Archive</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem className={`text-red-400 focus:text-red-400`}>
