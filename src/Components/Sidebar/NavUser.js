@@ -4,8 +4,12 @@ import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
+  CircleUserRound,
   CreditCard,
+  LifeBuoy,
   LogOut,
+  Settings,
+  Settings2,
   Sparkles,
 } from "lucide-react";
 
@@ -25,6 +29,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
 
 export function NavUser({ user }) {
   const { isMobile } = useSidebar();
@@ -33,65 +38,68 @@ export function NavUser({ user }) {
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger asChild className="ring-0">
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground focus-visible:ring-0"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
+              <Avatar className="h-8 w-8 rounded-full">
                 <AvatarImage src={user.avatar} alt={user.name} />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-medium">{user?.name}</span>
+                <span className="truncate text-xs text-[#afafaf]">
+                  {user?.subscription_type}
+                </span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              {user?.paid == false && (
+                <button className=" rounded-xl bg-[#212121] hover:bg-[#2f2f2f] text-sm cursor-pointer text-medium border-1 border-[#ffffff26] hover:shadow px-3  py-1">
+                  Upgrade
+                </button>
+              )}
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
-            align="end"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg bg-[#353535]"
+            side={isMobile ? "bottom" : "top"}
+            align={isMobile ? "end" : "start"}
             sideOffset={4}
+            alignOffset={0}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
+              <DropdownMenuItem
+                className={`pointer-events-none text-[16px] text-[#afafaf]`}
+              >
+                <CircleUserRound className="text-[#afafaf]" />
+                {user?.email}
+              </DropdownMenuItem>
+
+              <DropdownMenuItem className={`text-[16px] text-white`}>
+                <Sparkles className="text-white" />
+                Upgrade Plane
+              </DropdownMenuItem>
+
+              <DropdownMenuItem className={`text-[16px] text-white`}>
+                <Settings2 className="text-white" />
+                Customize ChatGPT
+              </DropdownMenuItem>
+
+              <DropdownMenuItem className={`text-[16px] text-white`}>
+                <Settings className="text-white" />
+                Settings
               </DropdownMenuItem>
             </DropdownMenuGroup>
+
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
+
+            <DropdownMenuItem className={`text-[16px] text-white`}>
+              <LifeBuoy className="text-white" />
+              Help
+            </DropdownMenuItem>
+
+            <DropdownMenuItem className={`text-[16px] text-white`}>
+              <LogOut className="text-white" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

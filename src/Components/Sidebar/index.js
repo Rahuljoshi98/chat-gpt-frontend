@@ -23,9 +23,11 @@ import {
 // This is sample data.
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "Rahul Joshi",
+    email: "test@gmail.com",
     avatar: "/avatars/shadcn.jpg",
+    subscription_type: "Free",
+    paid: false,
   },
   projects: [
     {
@@ -87,7 +89,7 @@ export function AppSidebar(props) {
 
         <NavProjects projects={data.projects} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className={`border-t border-[#ffffff0d]`}>
         <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />
