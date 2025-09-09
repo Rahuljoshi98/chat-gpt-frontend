@@ -4,6 +4,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/src/Components/Sidebar";
 import { ThemeProvider } from "next-themes";
 import ReduxProvider from "@/src/store/reduxProvider";
+import Header from "@/src/Components/Common/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,10 @@ export default function RootLayout({ children }) {
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <SidebarProvider>
               <AppSidebar />
-              <main>{children}</main>
+              <main className="w-full min-h-screen bg-[#212121] ">
+                <Header />
+                {children}
+              </main>
             </SidebarProvider>
           </ThemeProvider>
         </ReduxProvider>

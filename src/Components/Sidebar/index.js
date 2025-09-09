@@ -79,31 +79,40 @@ const data = {
 
 export function AppSidebar(props) {
   const { toggleSidebar, state } = useSidebar();
-  console.log("state", state);
+  const expanded = "[--sidebar-width:18rem]";
+  const collapsed = "[--sidebar-width-icon:4rem]";
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar
+      className={`${state === "expanded" ? expanded : collapsed}`}
+      collapsible="icon"
+      {...props}
+    >
       <SidebarHeader>
         <div className="flex justify-between items-center">
-          <div className={`${state == "expanded" ? "block" : "hidden"} p-2`}>
+          <div
+            className={`${
+              state == "expanded" ? "block" : "hidden"
+            } p-2 flex-shrink-0`}
+          >
             <Logo />
           </div>
           <div
             onClick={toggleSidebar}
-            className="rounded-md p-2 cursor-pointer hover:bg-sidebar-accent"
+            className="rounded-md p-2 cursor-pointer hover:bg-sidebar-accent flex-shrink-0"
           >
             <Columns2 className="h-5 w-5 text-white" />
           </div>
         </div>
       </SidebarHeader>
       <SidebarContent className={`gap-0`}>
-        <NavMain navItems={data.navMainItems1} />
-        <NavMain navItems={data.navMainItems2} />
-        <NavMain navItems={data.navMainItems3} />
+        <NavMain navItems={data?.navMainItems1} />
+        <NavMain navItems={data?.navMainItems2} />
+        <NavMain navItems={data?.navMainItems3} />
 
-        <NavProjects projects={data.projects} />
+        <NavProjects projects={data?.projects} />
       </SidebarContent>
       <SidebarFooter className={`border-t border-[#ffffff0d]`}>
-        <NavUser user={data.user} />
+        <NavUser user={data?.user} />
       </SidebarFooter>
     </Sidebar>
   );
