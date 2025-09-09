@@ -1,0 +1,44 @@
+.sidebarBg > div:first-child{
+    background: linear-gradient(
+        to bottom right,
+        #f5e5bb, 
+        #eeeed4, 
+        #c9e6f0, 
+        #b9e0f3, 
+        #c8e6f3  
+      );
+}
+
+.sideBarHover:hover{
+    background: #01B763 !important;
+    color: white !important;
+}
+
+.subMenuUl{
+    border-left: 1px solid #D1CDCD;
+}
+
+.activeLinkStyle{
+    background: #01B763 !important;
+    color: white !important;
+}
+
+.nonCollapsedPosition{
+    top: 2rem;
+    left: 246px;
+    z-index: 1000;
+}
+
+.collapsedPosition{
+    top: 2rem;
+    left: 37px;
+    z-index: 1000;
+}
+
+.sidebarToogleIcon path{
+    stroke-width: 2;
+}
+
+.contentLayout{
+    overflow: scroll;
+}
