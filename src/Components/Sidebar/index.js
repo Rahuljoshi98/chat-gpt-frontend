@@ -34,14 +34,17 @@ const data = {
     {
       name: "Design Engineering",
       url: "#",
+      id: "1",
     },
     {
       name: "Sales & Marketing",
       url: "#",
+      id: "2",
     },
     {
       name: "Travel",
       url: "#",
+      id: "3",
     },
   ],
   navMainItems1: [
