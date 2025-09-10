@@ -37,7 +37,6 @@ const ProjectItem = memo(function ProjectItem({
 }) {
   const inputRef = useRef(null);
 
-  // Auto-select text when input is focused
   useEffect(() => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
