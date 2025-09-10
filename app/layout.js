@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <SidebarProvider>
               <AppSidebar />
-              <main className="w-full min-h-screen bg-[#212121] ">
+              <main className="w-full min-h-screen bg-[#212121] relative">
                 <Header />
                 {children}
               </main>

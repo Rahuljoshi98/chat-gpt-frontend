@@ -130,3 +130,27 @@ body {
 .dropDownHoverBg:focus{
   background-color: #ffffff1a !important;
 }
+
+/* For WebKit browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 8px;                /* width of scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #1e1e1e;       /* scrollbar background (track) */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;          /* scrollbar color */
+  border-radius: 8px;        /* rounded edges */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #aaa;          /* lighter on hover */
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;           /* thin scrollbar */
+  scrollbar-color: #888 #1e1e1e;   /* thumb color | track color */
+}
