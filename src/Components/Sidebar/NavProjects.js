@@ -1,6 +1,5 @@
 "use client";
 import { Archive, MoreHorizontal, Pencil, Share, Trash2 } from "lucide-react";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,13 +23,113 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState, memo, useRef, useEffect } from "react";
 
-export function NavProjects({ projects }) {
+const ProjectItem = memo(function ProjectItem({
+  item,
+  isEditing,
+  editingValue,
+  onChange,
+  onSave,
+  onStartEdit,
+  onDelete,
+  isMobile,
+}) {
+  const inputRef = useRef(null);
+
+  // Auto-select text when input is focused
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditing]);
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onSave();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      onSave(true);
+    }
+  };
+
+  return (
+    <SidebarMenuItem key={item.id} className="flex justify-between">
+      <SidebarMenuButton asChild className="flex-1">
+        <div className="w-full">
+          {isEditing ? (
+            <input
+              ref={inputRef}
+              value={editingValue}
+              onChange={(e) => onChange(e.target.value)}
+              onBlur={() => onSave()}
+              onKeyDown={handleKeyDown}
+              className="w-full px-3 py-1.5 rounded-md bg-[#2a2a2a] text-white text-[16px] outline-none"
+            />
+          ) : (
+            <span
+              className="group-data-[collapsible=icon]:hidden text-[16px] truncate"
+              onClick={() => onStartEdit(item)}
+            >
+              {item.name}
+            </span>
+          )}
+        </div>
+      </SidebarMenuButton>
+
+      {!isEditing && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuAction showOnHover>
+              <MoreHorizontal />
+              <span className="sr-only">More</span>
+            </SidebarMenuAction>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className="w-fit rounded-md bg-[#353535]"
+            side={isMobile ? "bottom" : "right"}
+            align={isMobile ? "end" : "start"}
+            sideOffset={-20}
+            alignOffset={18}
+          >
+            <DropdownMenuItem>
+              <Share className="w-4 h-4 text-white" />
+              <span>Share</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onStartEdit(item)}>
+              <Pencil className="w-4 h-4 text-white" />
+              <span>Rename</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Archive className="w-4 h-4 text-white" />
+              <span>Archive</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-red-400"
+              onClick={() => onDelete(item)}
+            >
+              <Trash2 className="w-4 h-4 text-red-400" />
+              <span>Delete</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+    </SidebarMenuItem>
+  );
+});
+
+export function NavProjects({ projects: initialProjects }) {
   const { isMobile } = useSidebar();
+
+  const [projects, setProjects] = useState(initialProjects);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [deleteModalData, setDeleteModalData] = useState({});
+
+  const [editingId, setEditingId] = useState(null);
+  const [editingValue, setEditingValue] = useState("");
 
   const handleDeleteModal = (open) => {
     setOpenDeleteModal(open);
@@ -44,30 +143,42 @@ export function NavProjects({ projects }) {
     setOpenDeleteModal(true);
   };
 
+  const handleStartEdit = (item) => {
+    setEditingId(item.id);
+    setEditingValue(item.name);
+  };
+
+  const handleSave = (cancel = false) => {
+    if (!cancel) {
+      setProjects((prev) =>
+        prev.map((p) =>
+          p.id === editingId ? { ...p, name: editingValue.trim() || p.name } : p
+        )
+      );
+    }
+    setEditingId(null);
+    setEditingValue("");
+  };
+
   return (
     <>
-      <Dialog
-        open={openDeleteModal}
-        onOpenChange={handleDeleteModal}
-        className={``}
-      >
+      {/* Delete Modal */}
+      <Dialog open={openDeleteModal} onOpenChange={handleDeleteModal}>
         <DialogContent
           showCloseButton={false}
-          className={`max-w-xl bg-[#353535] p-4 rounded-xl`}
+          className="max-w-xl bg-[#353535] p-4 rounded-xl"
         >
           <DialogHeader>
             <DialogTitle>
-              <div className="">
-                <h1 className={`text-[20px] font-normal`}>Delete Chat?</h1>
-              </div>
+              <h1 className="text-[20px] font-normal">Delete Chat?</h1>
             </DialogTitle>
           </DialogHeader>
 
           <div className="mt-2">
-            <p className="text-lg font-nomal">
+            <p className="text-lg font-normal">
               This will delete {deleteModalData?.name}.
             </p>
-            <p className="text-[16px] font-nomal text-[#afafaf] mt-1">
+            <p className="text-[16px] text-[#afafaf] mt-1">
               Visit <span className="underline">settings</span> to delete any
               memories saved during this chat.
             </p>
@@ -75,73 +186,36 @@ export function NavProjects({ projects }) {
 
           <div className="flex items-center justify-end mt-4 gap-3 text-[16px]">
             <button
-              className="rounded-3xl bg-[#212121] hover:bg-[#2f2f2f] cursor-pointer text-medium border-1 border-[#ffffff26] hover:shadow px-5  py-2 focus:outline-none focus:ring-0 focus-visible:ring-0"
-              onClick={() => handleDeleteModal()}
+              className="rounded-3xl bg-[#212121] hover:bg-[#2f2f2f] px-5 py-2"
+              onClick={() => handleDeleteModal(false)}
             >
               Cancel
             </button>
-            <button className="rounded-3xl bg-red-600 hover:bg-[#911e1b] cursor-pointer text-medium border-1 border-[#ffffff26] hover:shadow px-5 py-2 focus:outline-none focus:ring-0 focus-visible:ring-0">
+            <button className="rounded-3xl bg-red-600 hover:bg-[#911e1b] px-5 py-2">
               Delete
             </button>
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Sidebar Projects */}
       <SidebarGroup>
         <SidebarGroupLabel className="text-[15px] font-medium">
           Chats
         </SidebarGroupLabel>
         <SidebarMenu>
           {projects?.map((item) => (
-            <SidebarMenuItem key={item?.id}>
-              <SidebarMenuButton asChild>
-                <a href={item?.url} className="flex items-center gap-2">
-                  <span className="group-data-[collapsible=icon]:hidden text-[16px]">
-                    {item?.name}
-                  </span>
-                </a>
-              </SidebarMenuButton>
-
-              {/* Dropdown actions */}
-              <DropdownMenu>
-                <DropdownMenuTrigger className="ring-0" asChild>
-                  <SidebarMenuAction
-                    showOnHover
-                    className="focus-visible:ring-0"
-                  >
-                    <MoreHorizontal />
-                    <span className="sr-only">More</span>
-                  </SidebarMenuAction>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  className="w-fit rounded-md bg-[#353535]"
-                  side={isMobile ? "bottom" : "right"}
-                  align={isMobile ? "end" : "start"}
-                  sideOffset={-20}
-                  alignOffset={18}
-                >
-                  <DropdownMenuItem>
-                    <Share className="w-4 h-4 text-white" />
-                    <span>Share</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Pencil className="w-4 h-4 text-white" />
-                    <span>Rename</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Archive className="w-4 h-4 text-white" />
-                    <span>Archive</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className={`text-red-400 focus:text-red-400`}
-                    onClick={() => handleOpenDeleteModal(item)}
-                  >
-                    <Trash2 className="w-4 h-4 text-red-400" />
-                    <span>Delete</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </SidebarMenuItem>
+            <ProjectItem
+              key={item.id}
+              item={item}
+              isEditing={editingId === item.id}
+              editingValue={editingValue}
+              onChange={setEditingValue}
+              onSave={handleSave}
+              onStartEdit={handleStartEdit}
+              onDelete={handleOpenDeleteModal}
+              isMobile={isMobile}
+            />
           ))}
         </SidebarMenu>
       </SidebarGroup>
