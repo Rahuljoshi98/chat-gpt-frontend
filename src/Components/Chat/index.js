@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,12 +13,55 @@ import {
   BookOpen,
   Image,
   Mic,
-  AudioWaveform,
   Plus,
   AudioLines,
+  Copy,
 } from "lucide-react";
+import { createHighlighter } from "shiki";
 
-function index() {
+function CodeBlock({ language = "jsx", code }) {
+  const [highlighted, setHighlighted] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      const highlighter = await createHighlighter({
+        themes: ["vitesse-dark"],
+        langs: [language],
+      });
+      const html = highlighter.codeToHtml(code, {
+        lang: language,
+        theme: "vitesse-dark",
+      });
+      setHighlighted(html);
+    })();
+  }, [code, language]);
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(code);
+  };
+
+  return (
+    <div className="relative my-3 w-full border border-[#333] rounded-lg overflow-hidden bg-[#2a2a2a]">
+      <div className="flex justify-between items-center bg-[#2a2a2a] px-3 py-2 text-sm text-gray-300">
+        <span>{language}</span>
+        <button
+          onClick={handleCopy}
+          className="flex items-center gap-2 text-sm hover:text-white cursor-pointer"
+        >
+          <Copy className="text-white h-4 w-4" />
+          Copy code
+        </button>
+      </div>
+
+      <pre
+        className="text-lg font-mono overflow-x-auto custom-scrollbar"
+        dangerouslySetInnerHTML={{ __html: highlighted }}
+      />
+    </div>
+  );
+}
+
+export default function ChatPage() {
   const [textValue, setTextValue] = useState("");
   const textareaRef = useRef(null);
   const maxHeight = 150;
@@ -33,18 +75,38 @@ function index() {
       content:
         "Sure! AI in fintech is used for fraud detection, customer service, personalization, and risk assessment.",
     },
-    { role: "user", content: "Nice, give me some real-world examples." },
+    { role: "user", content: "Show me a React component." },
     {
       role: "assistant",
-      content:
-        "Examples: PayPal uses AI for fraud detection, Upstart for credit scoring, and chatbots for automated customer support.",
+      type: "code",
+      language: "jsx",
+      content: `<div className="relative my-3 w-full border border-[#333] rounded-lg overflow-hidden bg-[#2a2a2a]">
+      {/* Header */}
+      <div className="flex justify-between items-center bg-[#2a2a2a] px-3 py-2 text-sm text-gray-300">
+        <span>{language}</span>
+        <button
+          onClick={handleCopy}
+          className="flex items-center gap-1 text-xs hover:text-white"
+        >
+          <Copy size={14} />
+          Copy
+        </button>
+      </div>
+
+      {/* Shiki highlighted code with padding inside */}
+      <div className="p-3">
+        <pre
+          className="text-lg font-mono overflow-x-auto custom-scrollbar"
+          dangerouslySetInnerHTML={{ __html: highlighted }}
+        />
+      </div>
+    </div>`,
     },
   ];
 
   const resizeTextarea = () => {
     const textarea = textareaRef.current;
     if (!textarea) return;
-
     textarea.style.height = "auto";
     const height = Math.min(textarea.scrollHeight, maxHeight);
     textarea.style.height = `${height}px`;
@@ -63,7 +125,7 @@ function index() {
   }, []);
 
   return (
-    <div className="h-[calc(100vh-70px)] flex flex-col">
+    <div className="h-[calc(100vh-70px)] flex flex-col bg-[#1e1e1e] text-white">
       {/* Chat messages */}
       <div className="flex-1 overflow-y-auto px-4 pt-10 pb-20 custom-scrollbar">
         <div className="max-w-3xl mx-auto space-y-6">
@@ -76,12 +138,17 @@ function index() {
             >
               {msg.role === "user" ? (
                 // 🔹 User bubble
-                <div className="px-4 py-2 text-base whitespace-pre-line bg-[#303030] text-white rounded-[28px] max-w-[60%] text-lg">
+                <div className="px-4 py-2 text-base whitespace-pre-line bg-[#303030] text-white rounded-[28px] max-w-[60%] text-lg border border-[#444]">
                   {msg.content}
+                </div>
+              ) : msg.type === "code" ? (
+                // 🔹 AI code block
+                <div className="w-full">
+                  <CodeBlock language={msg.language} code={msg.content} />
                 </div>
               ) : (
                 // 🔹 AI response bubble
-                <div className="px-4 py-3 text-base whitespace-pre-line text-lg text-[#ddd">
+                <div className="px-4 py-3 text-base whitespace-pre-line text-lg text-[#ddd] w-full">
                   {msg.content}
                 </div>
               )}
@@ -148,5 +215,3 @@ function index() {
     </div>
   );
 }
-
-export default index;

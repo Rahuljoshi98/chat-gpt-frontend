@@ -178,3 +178,9 @@ body {
   scrollbar-width: thin;
   scrollbar-color: #555 transparent;
 }
+
+.shiki{
+  padding: 15px;
+  width: 100%;
+  overflow-x: auto;
+}
