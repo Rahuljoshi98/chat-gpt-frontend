@@ -63,7 +63,7 @@ function index() {
               placeholder="Ask anything"
               value={textValue}
               onInput={handleInput}
-              className="custom-scrollbar w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-lg placeholder:text-[#A0A0A0] resize-none px-3 text-white"
+              className="custom-scrollbar w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-lg placeholder:text-[#A0A0A0] resize-none px-3 py-1 text-white"
               rows={1}
             />
 
