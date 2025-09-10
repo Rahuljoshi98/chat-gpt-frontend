@@ -24,6 +24,23 @@ function index() {
   const textareaRef = useRef(null);
   const maxHeight = 150;
 
+  // 🔹 Dummy chat data
+  const messages = [
+    { role: "assistant", content: "Hello 👋 How can I help you today?" },
+    { role: "user", content: "Can you explain AI in fintech?" },
+    {
+      role: "assistant",
+      content:
+        "Sure! AI in fintech is used for fraud detection, customer service, personalization, and risk assessment.",
+    },
+    { role: "user", content: "Nice, give me some real-world examples." },
+    {
+      role: "assistant",
+      content:
+        "Examples: PayPal uses AI for fraud detection, Upstart for credit scoring, and chatbots for automated customer support.",
+    },
+  ];
+
   const resizeTextarea = () => {
     const textarea = textareaRef.current;
     if (!textarea) return;
@@ -38,7 +55,6 @@ function index() {
     resizeTextarea();
   };
 
-  // Handle initial resize and focus
   useEffect(() => {
     resizeTextarea();
     if (textareaRef.current) {
@@ -49,15 +65,36 @@ function index() {
   return (
     <div className="h-[calc(100vh-70px)] flex flex-col">
       {/* Chat messages */}
-      <div className="flex-1 overflow-y-auto px-4 pt-10 pb-20">
-        <div className="max-w-[calc(theme(maxWidth.3xl)-20px)] mx-auto"></div>
+      <div className="flex-1 overflow-y-auto px-4 pt-10 pb-20 custom-scrollbar">
+        <div className="max-w-3xl mx-auto space-y-6">
+          {messages.map((msg, i) => (
+            <div
+              key={i}
+              className={`flex ${
+                msg.role === "user" ? "justify-end" : "justify-start"
+              }`}
+            >
+              {msg.role === "user" ? (
+                // 🔹 User bubble
+                <div className="px-4 py-2 text-base whitespace-pre-line bg-[#303030] text-white rounded-[28px] max-w-[60%] text-lg">
+                  {msg.content}
+                </div>
+              ) : (
+                // 🔹 AI response bubble
+                <div className="px-4 py-3 text-base whitespace-pre-line text-lg text-[#ddd">
+                  {msg.content}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Input Bar */}
       <div className="px-4 pb-6">
         <div className="max-w-3xl mx-auto">
           <div className="bg-[#303030] border border-[#ffffff0d] rounded-[28px] px-2 py-2 shadow-lg flex flex-col">
-            {/* Textarea always present */}
+            {/* Textarea */}
             <textarea
               ref={textareaRef}
               placeholder="Ask anything"
