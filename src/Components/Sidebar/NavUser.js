@@ -23,9 +23,15 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useClerk } from "@clerk/nextjs";
 
 export function NavUser({ user }) {
   const { isMobile } = useSidebar();
+  const { signOut } = useClerk();
+
+  const handleLogout = () => {
+    signOut();
+  };
 
   return (
     <SidebarMenu>
@@ -91,7 +97,10 @@ export function NavUser({ user }) {
               Help
             </DropdownMenuItem>
 
-            <DropdownMenuItem className={`sm:text-[16px] text-sm text-white`}>
+            <DropdownMenuItem
+              className={`sm:text-[16px] text-sm text-white`}
+              onClick={() => handleLogout()}
+            >
               <LogOut className="text-white" />
               Log out
             </DropdownMenuItem>
