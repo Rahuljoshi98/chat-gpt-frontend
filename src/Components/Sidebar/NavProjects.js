@@ -68,12 +68,12 @@ const ProjectItem = memo(function ProjectItem({
               className="w-full px-3 py-1.5 rounded-md bg-[#2a2a2a] text-white text-[16px] outline-none"
             />
           ) : (
-            <span
-              className="group-data-[collapsible=icon]:hidden sm:text-[16px] text-sm truncate"
-              onClick={() => onStartEdit(item)}
+            <a
+              className="group-data-[collapsible=icon]:hidden sm:text-[16px] text-sm truncate flex-1"
+              href={item?.url}
             >
               {item.name}
-            </span>
+            </a>
           )}
         </div>
       </SidebarMenuButton>
