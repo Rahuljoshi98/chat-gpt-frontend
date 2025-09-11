@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+"use client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,6 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Archive,
   ChevronDown,
@@ -19,6 +20,7 @@ import {
 import React from "react";
 
 function Header() {
+  const isMobile = useIsMobile();
   return (
     <div className="z-10 bg-[#212121] px-2 sticky top-0 left-0 py-2 border-b border-[#ffffff0d] flex justify-between items-center">
       <DropdownMenu>
