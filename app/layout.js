@@ -5,6 +5,7 @@ import { AppSidebar } from "@/src/Components/Sidebar";
 import { ThemeProvider } from "next-themes";
 import ReduxProvider from "@/src/store/reduxProvider";
 import Header from "@/src/Components/Common/Header";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,22 +24,24 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ReduxProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <SidebarProvider>
-              <AppSidebar />
-              <main className="w-full min-h-screen bg-[#212121] relative">
-                <Header />
-                {children}
-              </main>
-            </SidebarProvider>
-          </ThemeProvider>
-        </ReduxProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <ReduxProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              <SidebarProvider>
+                <AppSidebar />
+                <main className="w-full min-h-screen bg-[#212121] relative">
+                  <Header />
+                  {children}
+                </main>
+              </SidebarProvider>
+            </ThemeProvider>
+          </ReduxProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
