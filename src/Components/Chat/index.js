@@ -138,7 +138,7 @@ export default function ChatPage() {
             >
               {msg.role === "user" ? (
                 // 🔹 User bubble
-                <div className="px-4 py-2 text-base whitespace-pre-line bg-[#303030] text-white rounded-[28px] max-w-[60%] sm:text-lg text-sm border border-[#444]">
+                <div className="px-4 py-2  whitespace-pre-line bg-[#303030] text-white rounded-[28px] max-w-[60%] sm:text-lg text-sm border border-[#444]">
                   {msg.content}
                 </div>
               ) : msg.type === "code" ? (
@@ -148,7 +148,7 @@ export default function ChatPage() {
                 </div>
               ) : (
                 // 🔹 AI response bubble
-                <div className="px-4 py-3 text-base whitespace-pre-line sm:text-lg text-sm text-[#ddd] w-full">
+                <div className="px-4 py-3 whitespace-pre-line sm:text-lg text-sm text-[#ddd] w-full">
                   {msg.content}
                 </div>
               )}

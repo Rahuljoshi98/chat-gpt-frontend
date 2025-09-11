@@ -73,7 +73,7 @@ function Header() {
           {/* share btn */}
           <button
             size="lg"
-            className="hover:bg-[#ffffff1a] px-4 py-2 rounded-3xl text-[16px] flex items-center gap-1 cursor-pointer sm:flex hidden"
+            className="hover:bg-[#ffffff1a] px-4 py-2 rounded-3xl text-[16px] items-center gap-1 cursor-pointer sm:flex hidden"
           >
             <div className="">Share</div>
             <Share className="w-5 h-5 text-white" />
@@ -89,7 +89,7 @@ function Header() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="w-(--radix-dropdown-menu-trigger-width) w-fit rounded-lg bg-[#353535]"
+              className="w-fit rounded-lg bg-[#353535]"
               side={"bottom"}
               align={"end"}
               sideOffset={2}
