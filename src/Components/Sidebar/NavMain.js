@@ -19,7 +19,7 @@ export function NavMain({ navItems }) {
               <a href={item.url} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <item.icon />
-                  <span className="group-data-[collapsible=icon]:hidden text-[16px]">
+                  <span className="group-data-[collapsible=icon]:hidden sm:text-[16px] text-sm">
                     {item.name}
                   </span>
                 </div>

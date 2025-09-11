@@ -62,23 +62,23 @@ export function NavUser({ user }) {
           >
             <DropdownMenuGroup>
               <DropdownMenuItem
-                className={`pointer-events-none text-[16px] text-[#afafaf]`}
+                className={`pointer-events-none sm:text-[16px] text-sm text-[#afafaf]`}
               >
                 <CircleUserRound className="text-[#afafaf]" />
                 {user?.email}
               </DropdownMenuItem>
 
-              <DropdownMenuItem className={`text-[16px] text-white`}>
+              <DropdownMenuItem className={`sm:text-[16px] text-sm text-white`}>
                 <Sparkles className="text-white" />
                 Upgrade Plane
               </DropdownMenuItem>
 
-              <DropdownMenuItem className={`text-[16px] text-white`}>
+              <DropdownMenuItem className={`sm:text-[16px] text-sm text-white`}>
                 <Settings2 className="text-white" />
                 Customize ChatGPT
               </DropdownMenuItem>
 
-              <DropdownMenuItem className={`text-[16px] text-white`}>
+              <DropdownMenuItem className={`sm:text-[16px] text-sm text-white`}>
                 <Settings className="text-white" />
                 Settings
               </DropdownMenuItem>
@@ -86,12 +86,12 @@ export function NavUser({ user }) {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem className={`text-[16px] text-white`}>
+            <DropdownMenuItem className={`sm:text-[16px] text-sm text-white`}>
               <LifeBuoy className="text-white" />
               Help
             </DropdownMenuItem>
 
-            <DropdownMenuItem className={`text-[16px] text-white`}>
+            <DropdownMenuItem className={`sm:text-[16px] text-sm text-white`}>
               <LogOut className="text-white" />
               Log out
             </DropdownMenuItem>

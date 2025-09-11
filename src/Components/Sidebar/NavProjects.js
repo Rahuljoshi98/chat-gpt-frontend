@@ -69,7 +69,7 @@ const ProjectItem = memo(function ProjectItem({
             />
           ) : (
             <span
-              className="group-data-[collapsible=icon]:hidden text-[16px] truncate"
+              className="group-data-[collapsible=icon]:hidden sm:text-[16px] text-sm truncate"
               onClick={() => onStartEdit(item)}
             >
               {item.name}
@@ -177,13 +177,13 @@ export function NavProjects({ projects: initialProjects }) {
             <p className="text-lg font-normal">
               This will delete {deleteModalData?.name}.
             </p>
-            <p className="text-[16px] text-[#afafaf] mt-1">
+            <p className="sm:text-[16px] text-sm text-[#afafaf] mt-1">
               Visit <span className="underline">settings</span> to delete any
               memories saved during this chat.
             </p>
           </div>
 
-          <div className="flex items-center justify-end mt-4 gap-3 text-[16px]">
+          <div className="flex items-center justify-end mt-4 gap-3 sm:text-[16px] text-sm">
             <button
               className="rounded-3xl bg-[#212121] hover:bg-[#2f2f2f] px-5 py-2"
               onClick={() => handleDeleteModal(false)}
