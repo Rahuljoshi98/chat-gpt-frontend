@@ -21,7 +21,7 @@ function SignUpHeader() {
           <Link
             size="lg"
             className="hover:bg-[#ffffff1a] px-4 py-2 rounded-3xl text-[16px] items-center gap-1 cursor-pointer sm:flex hidden"
-            href="/sign-in"
+            href="/sign-up"
           >
             <div className="">Sign Up</div>
           </Link>
