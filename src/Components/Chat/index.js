@@ -54,7 +54,7 @@ function CodeBlock({ language = "jsx", code }) {
       </div>
 
       <pre
-        className="text-lg font-mono overflow-x-auto custom-scrollbar"
+        className="sm:text-lg text-sm font-mono overflow-x-auto custom-scrollbar"
         dangerouslySetInnerHTML={{ __html: highlighted }}
       />
     </div>
@@ -96,7 +96,7 @@ export default function ChatPage() {
       {/* Shiki highlighted code with padding inside */}
       <div className="p-3">
         <pre
-          className="text-lg font-mono overflow-x-auto custom-scrollbar"
+          className="sm:text-lg text-sm font-mono overflow-x-auto custom-scrollbar"
           dangerouslySetInnerHTML={{ __html: highlighted }}
         />
       </div>
@@ -138,7 +138,7 @@ export default function ChatPage() {
             >
               {msg.role === "user" ? (
                 // 🔹 User bubble
-                <div className="px-4 py-2 text-base whitespace-pre-line bg-[#303030] text-white rounded-[28px] max-w-[60%] text-lg border border-[#444]">
+                <div className="px-4 py-2 text-base whitespace-pre-line bg-[#303030] text-white rounded-[28px] max-w-[60%] sm:text-lg text-sm border border-[#444]">
                   {msg.content}
                 </div>
               ) : msg.type === "code" ? (
@@ -148,7 +148,7 @@ export default function ChatPage() {
                 </div>
               ) : (
                 // 🔹 AI response bubble
-                <div className="px-4 py-3 text-base whitespace-pre-line text-lg text-[#ddd] w-full">
+                <div className="px-4 py-3 text-base whitespace-pre-line sm:text-lg text-sm text-[#ddd] w-full">
                   {msg.content}
                 </div>
               )}
@@ -167,7 +167,7 @@ export default function ChatPage() {
               placeholder="Ask anything"
               value={textValue}
               onInput={handleInput}
-              className="custom-scrollbar w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-lg placeholder:text-[#A0A0A0] resize-none px-3 py-1 text-white"
+              className="custom-scrollbar w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 sm:text-lg text-sm placeholder:text-[#A0A0A0] resize-none px-3 py-1 text-white"
               rows={1}
             />
 

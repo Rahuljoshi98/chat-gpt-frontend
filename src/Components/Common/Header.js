@@ -47,7 +47,7 @@ function Header() {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <div className="flex items-center gap-2">
+      <div className="items-center gap-2 sm:flex hidden">
         <div className="text-[#afafaf] font-medium">Saved memory full</div>
         <Info className="text-[#afafaf] h-4 w-4" />
       </div>
@@ -56,7 +56,7 @@ function Header() {
         {/* share btn */}
         <button
           size="lg"
-          className="hover:bg-[#ffffff1a] px-4 py-2 rounded-3xl text-[16px] flex items-center gap-1 cursor-pointer"
+          className="hover:bg-[#ffffff1a] px-4 py-2 rounded-3xl text-[16px] flex items-center gap-1 cursor-pointer sm:flex hidden"
         >
           <div className="">Share</div>
           <Share className="w-5 h-5 text-white" />
