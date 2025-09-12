@@ -7,15 +7,21 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-export function NavMain({ navItems }) {
+export function NavMain({ navItems, closeSideBar }) {
   const { isMobile } = useSidebar();
+
+  const handleSideBar = () => {
+    if (isMobile && closeSideBar) {
+      closeSideBar();
+    }
+  };
 
   return (
     <SidebarGroup>
       <SidebarMenu>
         {navItems?.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild onClick={() => handleSideBar()}>
               <a href={item.url} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <item.icon />

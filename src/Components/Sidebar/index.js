@@ -62,6 +62,10 @@ export function AppSidebar({ openMobile, setOpenMobile, ...props }) {
   const collapsed = "[--sidebar-width-icon:4rem]";
   const isMobile = useIsMobile();
 
+  const closeSideBar = () => {
+    setOpenMobile(false);
+  };
+
   const children = (
     <>
       <SidebarHeader>
@@ -91,10 +95,10 @@ export function AppSidebar({ openMobile, setOpenMobile, ...props }) {
       </SidebarHeader>
 
       <SidebarContent className="gap-0">
-        <NavMain navItems={data?.navMainItems1} />
-        <NavMain navItems={data?.navMainItems2} />
+        <NavMain closeSideBar={closeSideBar} navItems={data?.navMainItems1} />
+        <NavMain closeSideBar={closeSideBar} navItems={data?.navMainItems2} />
         <NavProjects />
-        <NavChats projects={data?.projects} />
+        <NavChats closeSideBar={closeSideBar} projects={data?.projects} />
       </SidebarContent>
 
       <SidebarFooter className="border-t border-[#ffffff0d]">

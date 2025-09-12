@@ -37,7 +37,6 @@ export function NavProjects() {
 
   const handleCreateProject = async () => {
     try {
-      debugger;
       const payload = {
         name: projectName,
       };

@@ -34,6 +34,7 @@ const ProjectItem = memo(function ProjectItem({
   onStartEdit,
   onDelete,
   isMobile,
+  handleSideBar,
 }) {
   const inputRef = useRef(null);
 
@@ -48,9 +49,11 @@ const ProjectItem = memo(function ProjectItem({
     if (e.key === "Enter") {
       e.preventDefault();
       onSave();
+      handleSideBar();
     } else if (e.key === "Escape") {
       e.preventDefault();
       onSave(true);
+      handleSideBar();
     }
   };
 
@@ -65,12 +68,13 @@ const ProjectItem = memo(function ProjectItem({
               onChange={(e) => onChange(e.target.value)}
               onBlur={() => onSave()}
               onKeyDown={handleKeyDown}
-              className="w-full px-3 py-1.5 rounded-md bg-[#2a2a2a] text-white text-[16px] outline-none"
+              className="w-full px-2 py-1.5 rounded-md  text-white text-[16px] outline-none"
             />
           ) : (
             <a
               className="group-data-[collapsible=icon]:hidden sm:text-[16px] text-sm truncate flex-1"
               href={item?.url}
+              onClick={() => handleSideBar()}
             >
               {item.name}
             </a>
@@ -120,8 +124,14 @@ const ProjectItem = memo(function ProjectItem({
   );
 });
 
-export function NavChats({ projects: initialProjects }) {
+export function NavChats({ projects: initialProjects, closeSideBar }) {
   const { isMobile } = useSidebar();
+
+  const handleSideBar = () => {
+    if (isMobile && closeSideBar) {
+      closeSideBar();
+    }
+  };
 
   const [projects, setProjects] = useState(initialProjects);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -214,6 +224,7 @@ export function NavChats({ projects: initialProjects }) {
               onStartEdit={handleStartEdit}
               onDelete={handleOpenDeleteModal}
               isMobile={isMobile}
+              handleSideBar={handleSideBar}
             />
           ))}
         </SidebarMenu>
