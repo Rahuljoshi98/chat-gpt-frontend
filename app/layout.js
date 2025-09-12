@@ -1,11 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/src/Components/Sidebar";
 import { ThemeProvider } from "next-themes";
 import ReduxProvider from "@/src/store/reduxProvider";
-import Header from "@/src/Components/Common/Header";
 import { ClerkProvider } from "@clerk/nextjs";
+import CommonToast from "@/src/Components/Common/CommonToast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +31,7 @@ export default function RootLayout({ children }) {
         >
           <ReduxProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              <CommonToast />
               {children}
             </ThemeProvider>
           </ReduxProvider>
