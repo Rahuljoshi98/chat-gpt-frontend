@@ -2,7 +2,7 @@
 
 import React from "react";
 import { NavMain } from "./NavMain";
-import { NavProjects } from "./NavProjects";
+import { NavChats } from "./NavChats";
 import { NavUser } from "./NavUser";
 import {
   Sidebar,
@@ -28,6 +28,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import { NavProjects } from "./NavProjects";
 
 const SIDEBAR_WIDTH_MOBILE = "18rem";
 const side = "left";
@@ -53,7 +54,6 @@ const data = {
     { name: "Sora", url: "#", icon: SoraIcon },
     { name: "GPTs", url: "#", icon: GptsIcon },
   ],
-  navMainItems3: [{ name: "New Project", url: "#", icon: NewProjectIcon }],
 };
 
 export function AppSidebar({ openMobile, setOpenMobile, ...props }) {
@@ -93,8 +93,8 @@ export function AppSidebar({ openMobile, setOpenMobile, ...props }) {
       <SidebarContent className="gap-0">
         <NavMain navItems={data?.navMainItems1} />
         <NavMain navItems={data?.navMainItems2} />
-        <NavMain navItems={data?.navMainItems3} />
-        <NavProjects projects={data?.projects} />
+        <NavProjects />
+        <NavChats projects={data?.projects} />
       </SidebarContent>
 
       <SidebarFooter className="border-t border-[#ffffff0d]">

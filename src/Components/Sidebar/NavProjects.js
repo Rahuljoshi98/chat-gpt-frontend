@@ -1,221 +1,119 @@
 "use client";
-import { Archive, MoreHorizontal, Pencil, Share, Trash2 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
 import {
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { NewProjectIcon } from "../Common/Icons";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useState, memo, useRef, useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Lightbulb } from "lucide-react";
+import axios from "axios";
+import apiKeys from "@/src/helpers/api/apiKeys";
 
-const ProjectItem = memo(function ProjectItem({
-  item,
-  isEditing,
-  editingValue,
-  onChange,
-  onSave,
-  onStartEdit,
-  onDelete,
-  isMobile,
-}) {
-  const inputRef = useRef(null);
+export function NavProjects() {
+  const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] =
+    useState(false);
 
-  useEffect(() => {
-    if (isEditing && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
-  }, [isEditing]);
+  const [projectName, setProjectName] = useState("");
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      onSave();
-    } else if (e.key === "Escape") {
-      e.preventDefault();
-      onSave(true);
-    }
+  const handleOpenModal = () => {
+    setIsCreateProjectModalOpen(true);
   };
 
-  return (
-    <SidebarMenuItem key={item.id} className="flex justify-between">
-      <SidebarMenuButton asChild className="flex-1">
-        <div className="w-full">
-          {isEditing ? (
-            <input
-              ref={inputRef}
-              value={editingValue}
-              onChange={(e) => onChange(e.target.value)}
-              onBlur={() => onSave()}
-              onKeyDown={handleKeyDown}
-              className="w-full px-3 py-1.5 rounded-md bg-[#2a2a2a] text-white text-[16px] outline-none"
-            />
-          ) : (
-            <a
-              className="group-data-[collapsible=icon]:hidden sm:text-[16px] text-sm truncate flex-1"
-              href={item?.url}
-            >
-              {item.name}
-            </a>
-          )}
-        </div>
-      </SidebarMenuButton>
-
-      {!isEditing && (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuAction showOnHover>
-              <MoreHorizontal />
-              <span className="sr-only">More</span>
-            </SidebarMenuAction>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-fit rounded-md bg-[#353535]"
-            side={isMobile ? "bottom" : "right"}
-            align={isMobile ? "end" : "start"}
-            sideOffset={-20}
-            alignOffset={18}
-          >
-            <DropdownMenuItem>
-              <Share className="w-4 h-4 text-white" />
-              <span>Share</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onStartEdit(item)}>
-              <Pencil className="w-4 h-4 text-white" />
-              <span>Rename</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Archive className="w-4 h-4 text-white" />
-              <span>Archive</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="text-red-400"
-              onClick={() => onDelete(item)}
-            >
-              <Trash2 className="w-4 h-4 text-red-400" />
-              <span>Delete</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )}
-    </SidebarMenuItem>
-  );
-});
-
-export function NavProjects({ projects: initialProjects }) {
-  const { isMobile } = useSidebar();
-
-  const [projects, setProjects] = useState(initialProjects);
-  const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [deleteModalData, setDeleteModalData] = useState({});
-
-  const [editingId, setEditingId] = useState(null);
-  const [editingValue, setEditingValue] = useState("");
-
-  const handleDeleteModal = (open) => {
-    setOpenDeleteModal(open);
+  const handleCreateProjectModal = (open) => {
+    setIsCreateProjectModalOpen(open);
     if (!open) {
-      setDeleteModalData({});
     }
   };
 
-  const handleOpenDeleteModal = (item) => {
-    setDeleteModalData(item);
-    setOpenDeleteModal(true);
-  };
-
-  const handleStartEdit = (item) => {
-    setEditingId(item.id);
-    setEditingValue(item.name);
-  };
-
-  const handleSave = (cancel = false) => {
-    if (!cancel) {
-      setProjects((prev) =>
-        prev.map((p) =>
-          p.id === editingId ? { ...p, name: editingValue.trim() || p.name } : p
-        )
-      );
-    }
-    setEditingId(null);
-    setEditingValue("");
+  const handleCreateProject = async () => {
+    try {
+      debugger;
+      const payload = {
+        name: projectName,
+      };
+      const res = await axios.post(apiKeys.projects, payload, {
+        withCredentials: true,
+      });
+    } catch (error) {}
   };
 
   return (
     <>
-      {/* Delete Modal */}
-      <Dialog open={openDeleteModal} onOpenChange={handleDeleteModal}>
-        <DialogContent
-          showCloseButton={false}
-          className="max-w-xl bg-[#353535] p-4 rounded-xl"
-        >
+      <Dialog
+        open={isCreateProjectModalOpen}
+        onOpenChange={handleCreateProjectModal}
+      >
+        <DialogContent className="sm:w-2xl w-90vw bg-[#353535] p-4 rounded-xl">
           <DialogHeader>
             <DialogTitle>
-              <h1 className="text-[20px] font-normal">Delete Chat?</h1>
+              <h1 className="text-[20px] font-normal text-start">
+                Project name
+              </h1>
             </DialogTitle>
           </DialogHeader>
 
           <div className="mt-2">
-            <p className="text-lg font-normal">
-              This will delete {deleteModalData?.name}.
-            </p>
-            <p className="sm:text-[16px] text-sm text-[#afafaf] mt-1">
-              Visit <span className="underline">settings</span> to delete any
-              memories saved during this chat.
-            </p>
+            <Input
+              className="!bg-[#212121] !text-lg py-5 px-3 font-normal 
+             placeholder:text 
+             !border-[#ffffff1a] 
+             focus-visible:border-white 
+             focus-visible:ring-[1px] 
+             focus-visible:ring-white"
+              placeholder="Enter project name"
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+            />
+
+            <div className="mt-6 rounded-xl px-2 py-2 flex items-center gap-2 bg-[#414141]">
+              <Lightbulb className="h-6 w-6 text-white" />
+              <p className="font-normal text-sm">
+                Projects keep chats, files, and custom instructions in one
+                place. Use them for ongoing work, or just to keep things tidy.
+              </p>
+            </div>
           </div>
 
           <div className="flex items-center justify-end mt-4 gap-3 sm:text-[16px] text-sm">
             <button
-              className="rounded-3xl bg-[#212121] hover:bg-[#2f2f2f] px-5 py-2"
-              onClick={() => handleDeleteModal(false)}
+              className="rounded-3xl bg-[#f9f9f9] hover:bg-[#ececec] cursor-pointer text-[#0d0d0d] font-medium px-4 py-1.5 disabled:opacity-[0.6] disabled:cursor-not-allowed"
+              disabled={!projectName}
+              onClick={() => handleCreateProject()}
             >
-              Cancel
-            </button>
-            <button className="rounded-3xl bg-red-600 hover:bg-[#911e1b] px-5 py-2">
-              Delete
+              Create project
             </button>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Sidebar Projects */}
       <SidebarGroup>
-        <SidebarGroupLabel className="text-[15px] font-medium">
-          Chats
-        </SidebarGroupLabel>
         <SidebarMenu>
-          {projects?.map((item) => (
-            <ProjectItem
-              key={item.id}
-              item={item}
-              isEditing={editingId === item.id}
-              editingValue={editingValue}
-              onChange={setEditingValue}
-              onSave={handleSave}
-              onStartEdit={handleStartEdit}
-              onDelete={handleOpenDeleteModal}
-              isMobile={isMobile}
-            />
-          ))}
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="cursor-pointer"
+              onClick={() => handleOpenModal()}
+            >
+              <span className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <NewProjectIcon />
+                  <span className="group-data-[collapsible=icon]:hidden sm:text-[16px] text-sm">
+                    New project
+                  </span>
+                </div>
+              </span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroup>
     </>
