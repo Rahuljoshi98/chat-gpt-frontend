@@ -17,13 +17,25 @@ import {
   Share,
   Trash2,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AppSidebar } from "../Sidebar";
 import { HamIcon } from "./Icons";
+import { useDispatch } from "react-redux";
+import { getProjectsList } from "@/src/store/slices/project";
+import { useUser } from "@clerk/nextjs";
 
 function Header() {
   const isMobile = useIsMobile();
   const [openMobile, setOpenMobile] = useState(false);
+  const { isSignedIn, isLoaded } = useUser();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (isSignedIn && isLoaded) {
+      dispatch(getProjectsList());
+    }
+  }, [isSignedIn, isLoaded]);
+
   return (
     <>
       <AppSidebar openMobile={openMobile} setOpenMobile={setOpenMobile} />
