@@ -15,15 +15,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Lightbulb } from "lucide-react";
+import { Lightbulb, Loader } from "lucide-react";
 import axios from "axios";
 import apiKeys from "@/src/helpers/api/apiKeys";
+import { handleErrorMessage } from "@/src/helpers/CommonFunctions";
 
 export function NavProjects() {
   const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] =
     useState(false);
 
   const [projectName, setProjectName] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleOpenModal = () => {
     setIsCreateProjectModalOpen(true);
@@ -32,10 +34,13 @@ export function NavProjects() {
   const handleCreateProjectModal = (open) => {
     setIsCreateProjectModalOpen(open);
     if (!open) {
+      setProjectName("");
+      setLoading(false);
     }
   };
 
   const handleCreateProject = async () => {
+    setLoading(true);
     try {
       const payload = {
         name: projectName,
@@ -43,7 +48,12 @@ export function NavProjects() {
       const res = await axios.post(apiKeys.projects, payload, {
         withCredentials: true,
       });
-    } catch (error) {}
+      handleCreateProjectModal();
+    } catch (error) {
+      handleErrorMessage(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -85,11 +95,14 @@ export function NavProjects() {
 
           <div className="flex items-center justify-end mt-4 gap-3 sm:text-[16px] text-sm">
             <button
-              className="rounded-3xl bg-[#f9f9f9] hover:bg-[#ececec] cursor-pointer text-[#0d0d0d] font-medium px-4 py-1.5 disabled:opacity-[0.6] disabled:cursor-not-allowed"
-              disabled={!projectName}
+              className="rounded-3xl bg-[#f9f9f9] hover:bg-[#ececec] cursor-pointer text-[#0d0d0d] font-medium px-4 py-1.5 disabled:opacity-[0.6] disabled:cursor-not-allowed flex items-center gap-1"
+              disabled={!projectName || loading}
               onClick={() => handleCreateProject()}
             >
-              Create project
+              Create Project
+              {loading && (
+                <Loader className="w-5 h-5 text-[#0d0d0d] animate-spin" />
+              )}
             </button>
           </div>
         </DialogContent>
