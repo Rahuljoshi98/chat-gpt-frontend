@@ -51,7 +51,6 @@ export function NavProjects() {
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [deleteModalData, setDeleteModalData] = useState({});
-  console.log("deleteModalData", deleteModalData);
 
   const handleDeleteModal = (open) => {
     setOpenDeleteModal(open);
@@ -61,7 +60,6 @@ export function NavProjects() {
   };
 
   const handleOpenDeleteModal = (item) => {
-    debugger;
     setDeleteModalData(item);
     setOpenDeleteModal(true);
   };
@@ -96,7 +94,6 @@ export function NavProjects() {
   };
 
   const handleDeleteProject = async (id) => {
-    debugger;
     setModalActionLoading(true);
     try {
       const res = await axios.delete(`${apiKeys.projects}/${id}`, {
