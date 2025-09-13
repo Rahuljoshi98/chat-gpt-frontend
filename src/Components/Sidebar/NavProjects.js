@@ -47,7 +47,24 @@ export function NavProjects() {
     useState(false);
 
   const [projectName, setProjectName] = useState("");
-  const [createProjectLoading, setCreateProjectLoading] = useState(false);
+  const [modalActionLoading, setModalActionLoading] = useState(false);
+
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [deleteModalData, setDeleteModalData] = useState({});
+  console.log("deleteModalData", deleteModalData);
+
+  const handleDeleteModal = (open) => {
+    setOpenDeleteModal(open);
+    if (!open) {
+      setDeleteModalData({});
+    }
+  };
+
+  const handleOpenDeleteModal = (item) => {
+    debugger;
+    setDeleteModalData(item);
+    setOpenDeleteModal(true);
+  };
 
   const handleOpenModal = () => {
     setIsCreateProjectModalOpen(true);
@@ -57,12 +74,12 @@ export function NavProjects() {
     setIsCreateProjectModalOpen(open);
     if (!open) {
       setProjectName("");
-      setCreateProjectLoading(false);
+      setModalActionLoading(false);
     }
   };
 
   const handleCreateProject = async () => {
-    setCreateProjectLoading(true);
+    setModalActionLoading(true);
     try {
       const payload = {
         name: projectName,
@@ -74,12 +91,69 @@ export function NavProjects() {
     } catch (error) {
       handleErrorMessage(error);
     } finally {
-      setCreateProjectLoading(false);
+      setModalActionLoading(false);
+    }
+  };
+
+  const handleDeleteProject = async (id) => {
+    debugger;
+    setModalActionLoading(true);
+    try {
+      const res = await axios.delete(`${apiKeys.projects}/${id}`, {
+        withCredentials: true,
+      });
+      handleDeleteModal();
+    } catch (error) {
+      handleErrorMessage(error);
+    } finally {
+      setModalActionLoading(false);
     }
   };
 
   return (
     <>
+      {/* Delete Modal */}
+      <Dialog open={openDeleteModal} onOpenChange={handleDeleteModal}>
+        <DialogContent
+          showCloseButton={false}
+          className="sm:w-2xl w-90vw bg-[#353535] p-4 rounded-xl"
+        >
+          <DialogHeader>
+            <DialogTitle>
+              <h1 className="text-[20px] font-normal">Delete Project?</h1>
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="mt-2">
+            <p className="text-lg font-normal">
+              This will permanently delete all project files and chats. To save
+              chats, move them to your chat list or another project before
+              deleting.
+            </p>
+          </div>
+
+          <div className="flex items-center justify-end mt-4 gap-3 sm:text-[16px] text-sm">
+            <button
+              className="rounded-3xl bg-[#212121] hover:bg-[#2f2f2f] px-5 py-2 cursor-pointer"
+              onClick={() => handleDeleteModal(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="rounded-3xl bg-red-600 hover:bg-[#911e1b] px-5 py-2 disabled:opacity-[0.6] disabled:cursor-not-allowed cursor-pointer flex items-center gap-1"
+              onClick={() => handleDeleteProject(deleteModalData?._id)}
+              disabled={modalActionLoading}
+            >
+              Delete Project
+              {modalActionLoading && (
+                <Loader className="w-5 h-5 text-white animate-spin" />
+              )}
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* create project */}
       <Dialog
         open={isCreateProjectModalOpen}
         onOpenChange={handleCreateProjectModal}
@@ -118,11 +192,11 @@ export function NavProjects() {
           <div className="flex items-center justify-end mt-4 gap-3 sm:text-[16px] text-sm">
             <button
               className="rounded-3xl bg-[#f9f9f9] hover:bg-[#ececec] cursor-pointer text-[#0d0d0d] font-medium px-4 py-1.5 disabled:opacity-[0.6] disabled:cursor-not-allowed flex items-center gap-1"
-              disabled={!projectName || createProjectLoading}
+              disabled={!projectName || modalActionLoading}
               onClick={() => handleCreateProject()}
             >
               Create Project
-              {createProjectLoading && (
+              {modalActionLoading && (
                 <Loader className="w-5 h-5 text-[#0d0d0d] animate-spin" />
               )}
             </button>
@@ -187,7 +261,10 @@ export function NavProjects() {
                       <span>Rename Project</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-red-400">
+                    <DropdownMenuItem
+                      className="text-red-400"
+                      onClick={() => handleOpenDeleteModal(proj)}
+                    >
                       <Trash2 className="w-4 h-4 text-red-400" />
                       <span>Delete Project</span>
                     </DropdownMenuItem>
