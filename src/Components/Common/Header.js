@@ -30,7 +30,6 @@ function Header() {
   const isMobile = useIsMobile();
   const [openMobile, setOpenMobile] = useState(false);
   const { isSignedIn, isLoaded, user } = useUser();
-  console.log("user", user);
   const dispatch = useDispatch();
   const router = useRouter();
 

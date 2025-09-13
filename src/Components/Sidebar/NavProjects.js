@@ -235,11 +235,14 @@ export function NavProjects({ closeSideBar }) {
       try {
         const payload = { name: editingValue.trim() };
 
-        await axios.patch(`${apiKeys.projects}/${editingId}`, payload, {
-          withCredentials: true,
-        });
-
-        dispatch(updateProject({ _id: editingId, name: editingValue.trim() }));
+        const res = await axios.patch(
+          `${apiKeys.projects}/${editingId}`,
+          payload,
+          {
+            withCredentials: true,
+          }
+        );
+        dispatch(updateProject(res?.data?.data || {}));
       } catch (error) {
         handleErrorMessage(error);
       }

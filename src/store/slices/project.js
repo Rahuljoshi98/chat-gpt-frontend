@@ -34,12 +34,12 @@ export const projectSlice = createSlice({
       ];
     },
     removeProject: (state, action) => {
-      state.projectsList = state.projectsList?.filter(
+      state.projectsList = state?.projectsList?.filter(
         (proj) => proj._id !== action.payload
       );
     },
     updateProject: (state, action) => {
-      state.projectsList = state.projectsList.map((proj) =>
+      state.projectsList = state?.projectsList?.map((proj) =>
         proj._id === action.payload._id ? action.payload : proj
       );
     },
