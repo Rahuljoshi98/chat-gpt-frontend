@@ -184,3 +184,7 @@ body {
   width: 100%;
   overflow-x: auto;
 }
+
+body{
+  background-color: #212121;
+}

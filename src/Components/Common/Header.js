@@ -23,16 +23,20 @@ import { HamIcon } from "./Icons";
 import { useDispatch } from "react-redux";
 import { getProjectsList } from "@/src/store/slices/project";
 import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 function Header() {
   const isMobile = useIsMobile();
   const [openMobile, setOpenMobile] = useState(false);
   const { isSignedIn, isLoaded } = useUser();
   const dispatch = useDispatch();
+  const router = useRouter();
 
   useEffect(() => {
     if (isSignedIn && isLoaded) {
       dispatch(getProjectsList());
+    } else if (isLoaded && !isSignedIn) {
+      router.push("/");
     }
   }, [isSignedIn, isLoaded]);
 

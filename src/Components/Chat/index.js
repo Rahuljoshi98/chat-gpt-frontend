@@ -125,7 +125,7 @@ export default function ChatPage() {
   }, []);
 
   return (
-    <div className="h-[calc(100dvh-70px)] flex flex-col  text-white">
+    <div className="max-h-[calc(100dvh-70px)] flex flex-col  text-white">
       {/* Chat messages */}
       <div className="flex-1 overflow-y-auto px-4 pt-10 pb-20 custom-scrollbar">
         <div className="max-w-3xl mx-auto space-y-6">
