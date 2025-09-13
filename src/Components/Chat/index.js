@@ -18,6 +18,9 @@ import {
   Copy,
 } from "lucide-react";
 import { createHighlighter } from "shiki";
+import axios from "axios";
+import apiKeys from "@/src/helpers/api/apiKeys";
+import { handleErrorMessage } from "@/src/helpers/CommonFunctions";
 
 function CodeBlock({ language = "jsx", code }) {
   const [highlighted, setHighlighted] = useState("");
@@ -54,7 +57,7 @@ function CodeBlock({ language = "jsx", code }) {
       </div>
 
       <pre
-        className="sm:text-lg text-sm font-mono overflow-x-auto custom-scrollbar"
+        className="sm:text-lg text-sm font-mono overflow-x-auto custom-scrollbar p-3"
         dangerouslySetInnerHTML={{ __html: highlighted }}
       />
     </div>
@@ -63,51 +66,32 @@ function CodeBlock({ language = "jsx", code }) {
 
 export default function ChatPage() {
   const [textValue, setTextValue] = useState("");
+  const [messages, setMessages] = useState([
+    { role: "assistant", content: "Hello 👋 How can I help you today?" },
+  ]);
   const textareaRef = useRef(null);
+  const chatContainerRef = useRef(null);
+  const bottomRef = useRef(null);
   const maxHeight = 150;
 
-  // 🔹 Dummy chat data
-  const messages = [
-    { role: "assistant", content: "Hello 👋 How can I help you today?" },
-    { role: "user", content: "Can you explain AI in fintech?" },
-    {
-      role: "assistant",
-      content:
-        "Sure! AI in fintech is used for fraud detection, customer service, personalization, and risk assessment.",
-    },
-    { role: "user", content: "Show me a React component." },
-    {
-      role: "assistant",
-      type: "code",
-      language: "jsx",
-      content: `<div className="relative my-3 w-full border border-[#333] rounded-lg overflow-hidden bg-[#2a2a2a]">
-      {/* Header */}
-      <div className="flex justify-between items-center bg-[#2a2a2a] px-3 py-2 text-sm text-gray-300">
-        <span>{language}</span>
-        <button
-          onClick={handleCopy}
-          className="flex items-center gap-1 text-xs hover:text-white"
-        >
-          <Copy size={14} />
-          Copy
-        </button>
-      </div>
+  const scrollToBottom = (behavior = "smooth") => {
+    bottomRef.current?.scrollIntoView({ behavior });
+  };
 
-      {/* Shiki highlighted code with padding inside */}
-      <div className="p-3">
-        <pre
-          className="sm:text-lg text-sm font-mono overflow-x-auto custom-scrollbar"
-          dangerouslySetInnerHTML={{ __html: highlighted }}
-        />
-      </div>
-    </div>`,
-    },
-  ];
+  useEffect(() => {
+    scrollToBottom("smooth");
+  }, [messages]);
 
   const resizeTextarea = () => {
     const textarea = textareaRef.current;
     if (!textarea) return;
+
     textarea.style.height = "auto";
+    if (textarea.value.trim() === "") {
+      textarea.style.height = "auto";
+      return;
+    }
+
     const height = Math.min(textarea.scrollHeight, maxHeight);
     textarea.style.height = `${height}px`;
   };
@@ -124,10 +108,58 @@ export default function ChatPage() {
     }
   }, []);
 
+  const handleChat = async () => {
+    if (!textValue.trim()) return;
+
+    const userMsg = { role: "user", content: textValue };
+    setMessages((prev) => [...prev, userMsg]);
+    setTextValue("");
+
+    // Reset textarea height when cleared
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
+
+    try {
+      const res = await axios.post(
+        apiKeys.chats,
+        { text: userMsg.content },
+        { withCredentials: true }
+      );
+
+      if (res.data?.success && res.data?.data) {
+        const { role, content } = res.data.data;
+        const newMsg =
+          content.type === "code"
+            ? {
+                role,
+                type: "code",
+                language: content.language || "jsx",
+                content: content.data,
+              }
+            : { role, content: content.data };
+
+        setMessages((prev) => [...prev, newMsg]);
+      }
+    } catch (error) {
+      handleErrorMessage(error);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleChat();
+    }
+  };
+
   return (
-    <div className="max-h-[calc(100dvh-70px)] flex flex-col  text-white">
+    <div className="h-[calc(100dvh-70px)] flex flex-col text-white">
       {/* Chat messages */}
-      <div className="flex-1 overflow-y-auto px-4 pt-10 pb-20 custom-scrollbar">
+      <div
+        ref={chatContainerRef}
+        className="flex-1 overflow-y-auto px-4 pt-10 pb-20 custom-scrollbar"
+      >
         <div className="max-w-3xl mx-auto space-y-6">
           {messages.map((msg, i) => (
             <div
@@ -137,23 +169,22 @@ export default function ChatPage() {
               }`}
             >
               {msg.role === "user" ? (
-                // 🔹 User bubble
-                <div className="px-4 py-2  whitespace-pre-line bg-[#303030] text-white rounded-[28px] max-w-[60%] sm:text-lg text-sm border border-[#444]">
+                <div className="px-4 py-2 whitespace-pre-line bg-[#303030] text-white rounded-[28px] max-w-[60%] sm:text-lg text-sm border border-[#444]">
                   {msg.content}
                 </div>
               ) : msg.type === "code" ? (
-                // 🔹 AI code block
                 <div className="w-full">
                   <CodeBlock language={msg.language} code={msg.content} />
                 </div>
               ) : (
-                // 🔹 AI response bubble
                 <div className="px-4 py-3 whitespace-pre-line sm:text-lg text-sm text-[#ddd] w-full">
                   {msg.content}
                 </div>
               )}
             </div>
           ))}
+          {/* Invisible anchor for scrolling */}
+          <div ref={bottomRef} />
         </div>
       </div>
 
@@ -161,7 +192,6 @@ export default function ChatPage() {
       <div className="px-4 pb-6">
         <div className="max-w-3xl mx-auto">
           <div className="bg-[#303030] border border-[#ffffff0d] rounded-[28px] px-2 py-2 shadow-lg flex flex-col">
-            {/* Textarea */}
             <textarea
               ref={textareaRef}
               placeholder="Ask anything"
@@ -169,13 +199,14 @@ export default function ChatPage() {
               onInput={handleInput}
               className="custom-scrollbar w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 sm:text-lg text-sm placeholder:text-[#A0A0A0] resize-none px-3 py-1 text-white"
               rows={1}
+              onKeyDown={handleKeyPress}
             />
 
             {/* Button row */}
             <div className="flex items-center justify-between gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="h-10 w-10 rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ffffff1a] data-[state=open]:bg-[#ffffff1a] outline-none focus:outline-none">
+                  <button className="h-10 w-10 rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ffffff1a] outline-none">
                     <Plus className="h-6 w-6 text-white" />
                   </button>
                 </DropdownMenuTrigger>
@@ -185,26 +216,23 @@ export default function ChatPage() {
                   side="top"
                 >
                   <DropdownMenuItem className="flex items-center gap-2 hover:bg-[#2c2c2c]">
-                    <Paperclip size={16} />
-                    Add photos & files
+                    <Paperclip size={16} /> Add photos & files
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-[#333]" />
                   <DropdownMenuItem className="flex items-center gap-2 hover:bg-[#2c2c2c]">
-                    <BookOpen size={16} />
-                    Study and learn
+                    <BookOpen size={16} /> Study and learn
                   </DropdownMenuItem>
                   <DropdownMenuItem className="flex items-center gap-2 hover:bg-[#2c2c2c]">
-                    <Image size={16} />
-                    Create image
+                    <Image size={16} /> Create image
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
               <div className="flex items-center gap-2">
-                <button className="h-10 w-10 rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ffffff1a] data-[state=open]:bg-[#ffffff1a] outline-none focus:outline-none">
+                <button className="h-10 w-10 rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ffffff1a]">
                   <Mic className="h-5 w-5 text-white" />
                 </button>
-                <button className="h-10 w-10 rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ffffff1a] data-[state=open]:bg-[#ffffff1a] outline-none focus:outline-none">
+                <button className="h-10 w-10 rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ffffff1a]">
                   <AudioLines className="h-5 w-5 text-white" />
                 </button>
               </div>
