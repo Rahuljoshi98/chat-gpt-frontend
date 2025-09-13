@@ -127,21 +127,28 @@ const ChatItems = memo(function ChatItems({
             sideOffset={-20}
             alignOffset={18}
           >
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              className={`sm:text-[16px] text-sm text-white opacity-50 cursor-not-allowed`}
+            >
               <Share className="w-4 h-4 text-white" />
               <span>Share</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onStartEdit(item)}>
+            <DropdownMenuItem
+              onClick={() => onStartEdit(item)}
+              className={`cursor-pointer`}
+            >
               <Pencil className="w-4 h-4 text-white" />
               <span>Rename</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              className={`sm:text-[16px] text-sm text-white opacity-50 cursor-not-allowed`}
+            >
               <Archive className="w-4 h-4 text-white" />
               <span>Archive</span>
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="text-red-400"
+              className="text-red-400 cursor-pointer"
               onClick={() => onDelete(item)}
             >
               <Trash2 className="w-4 h-4 text-red-400" />
