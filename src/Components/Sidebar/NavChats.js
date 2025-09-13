@@ -1,5 +1,12 @@
 "use client";
-import { Archive, MoreHorizontal, Pencil, Share, Trash2 } from "lucide-react";
+import {
+  Archive,
+  MoreHorizontal,
+  Pencil,
+  Share,
+  Trash2,
+  Loader,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,8 +32,12 @@ import {
 } from "@/components/ui/dialog";
 import { useState, memo, useRef, useEffect } from "react";
 import { HeaderSelector } from "../Common/selector";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Link from "next/link";
+import axios from "axios";
+import apiKeys from "@/src/helpers/api/apiKeys";
+import { handleErrorMessage } from "@/src/helpers/CommonFunctions";
+import { updateChat, removeChat } from "@/src/store/slices/chats";
 
 const ChatItems = memo(function ChatItems({
   item,
@@ -39,6 +50,7 @@ const ChatItems = memo(function ChatItems({
   isMobile,
   handleSideBar,
 }) {
+  const [hasSaved, setHasSaved] = useState(false);
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -48,14 +60,29 @@ const ChatItems = memo(function ChatItems({
     }
   }, [isEditing]);
 
+  useEffect(() => {
+    if (isEditing) {
+      setHasSaved(false);
+    }
+  }, [isEditing]);
+
+  const handleSave = (cancel = false, fromBlur = false) => {
+    if (hasSaved && !fromBlur) return;
+    setHasSaved(true);
+
+    if (!cancel) {
+      onSave();
+    }
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      onSave();
+      handleSave();
       handleSideBar();
     } else if (e.key === "Escape") {
       e.preventDefault();
-      onSave(true);
+      handleSave(true);
       handleSideBar();
     }
   };
@@ -69,9 +96,9 @@ const ChatItems = memo(function ChatItems({
               ref={inputRef}
               value={editingValue}
               onChange={(e) => onChange(e.target.value)}
-              onBlur={() => onSave()}
+              onBlur={() => handleSave(false, true)}
               onKeyDown={handleKeyDown}
-              className="w-full px-2 py-1.5 rounded-md  text-white text-[16px] outline-none"
+              className="w-full px-2 py-1.5 rounded-md text-white text-[16px] outline-none"
             />
           ) : (
             <Link
@@ -129,6 +156,15 @@ const ChatItems = memo(function ChatItems({
 
 export function NavChats({ closeSideBar }) {
   const { isMobile } = useSidebar();
+  const dispatch = useDispatch();
+  const selector = HeaderSelector();
+  const { allChats } = useSelector(selector);
+
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [deleteModalData, setDeleteModalData] = useState({});
+  const [editingId, setEditingId] = useState(null);
+  const [editingValue, setEditingValue] = useState("");
+  const [modalActionLoading, setModalActionLoading] = useState(false);
 
   const handleSideBar = () => {
     if (isMobile && closeSideBar) {
@@ -136,27 +172,9 @@ export function NavChats({ closeSideBar }) {
     }
   };
 
-  const selector = HeaderSelector();
-  const { allChats } = useSelector(selector);
-
-  const [chats, setChats] = useState([]);
-  const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [deleteModalData, setDeleteModalData] = useState({});
-
-  const [editingId, setEditingId] = useState(null);
-  const [editingValue, setEditingValue] = useState("");
-
-  useEffect(() => {
-    if (allChats?.length > 0) {
-      setChats(allChats);
-    }
-  }, [allChats]);
-
   const handleDeleteModal = (open) => {
     setOpenDeleteModal(open);
-    if (!open) {
-      setDeleteModalData({});
-    }
+    if (!open) setDeleteModalData({});
   };
 
   const handleOpenDeleteModal = (item) => {
@@ -164,20 +182,41 @@ export function NavChats({ closeSideBar }) {
     setOpenDeleteModal(true);
   };
 
+  const handleDeleteChat = async (_id) => {
+    setModalActionLoading(true);
+    try {
+      await axios.delete(`${apiKeys.chats}/${_id}`, {
+        withCredentials: true,
+      });
+      dispatch(removeChat(_id));
+      handleDeleteModal(false);
+    } catch (error) {
+      handleErrorMessage(error);
+    } finally {
+      setModalActionLoading(false);
+    }
+  };
+
   const handleStartEdit = (item) => {
     setEditingId(item._id);
     setEditingValue(item?.title);
   };
 
-  const handleSave = (cancel = false) => {
-    if (!cancel) {
-      setChats((prev) =>
-        prev.map((p) =>
-          p._id === editingId
-            ? { ...p, title: editingValue.trim() || p.title }
-            : p
-        )
-      );
+  const handleSave = async (cancel = false) => {
+    if (!cancel && editingId) {
+      try {
+        const payload = { title: editingValue.trim() };
+        const res = await axios.patch(
+          `${apiKeys.chats}/${editingId}`,
+          payload,
+          {
+            withCredentials: true,
+          }
+        );
+        dispatch(updateChat(res?.data?.data || []));
+      } catch (error) {
+        handleErrorMessage(error);
+      }
     }
     setEditingId(null);
     setEditingValue("");
@@ -201,33 +240,37 @@ export function NavChats({ closeSideBar }) {
             <p className="text-lg font-normal">
               This will delete {deleteModalData?.title}.
             </p>
-            <p className="sm:text-[16px] text-sm text-[#afafaf] mt-1">
-              Visit <span className="underline">settings</span> to delete any
-              memories saved during this chat.
-            </p>
           </div>
 
           <div className="flex items-center justify-end mt-4 gap-3 sm:text-[16px] text-sm">
             <button
               className="rounded-3xl bg-[#212121] hover:bg-[#2f2f2f] px-5 py-2"
               onClick={() => handleDeleteModal(false)}
+              disabled={modalActionLoading}
             >
               Cancel
             </button>
-            <button className="rounded-3xl bg-red-600 hover:bg-[#911e1b] px-5 py-2">
+            <button
+              className="rounded-3xl bg-red-600 hover:bg-[#911e1b] px-5 py-2 flex items-center gap-1 cursor-pointer disabled:cursor-not-allowed"
+              onClick={() => handleDeleteChat(deleteModalData?._id)}
+              disabled={modalActionLoading}
+            >
               Delete
+              {modalActionLoading && (
+                <Loader className="w-5 h-5 text-white animate-spin" />
+              )}
             </button>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Sidebar Projects */}
+      {/* Sidebar Chats */}
       <SidebarGroup>
         <SidebarGroupLabel className="text-[15px] font-medium">
           Chats
         </SidebarGroupLabel>
         <SidebarMenu>
-          {chats?.map((item) => (
+          {allChats?.map((item) => (
             <ChatItems
               key={item._id}
               item={item}

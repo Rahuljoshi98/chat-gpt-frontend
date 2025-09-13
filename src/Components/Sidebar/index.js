@@ -45,7 +45,6 @@ const data = {
 };
 
 export function AppSidebar({ openMobile, setOpenMobile, ...props }) {
-  debugger;
   const { toggleSidebar, state } = useSidebar();
   const expanded = "[--sidebar-width:18rem]";
   const collapsed = "[--sidebar-width-icon:4rem]";

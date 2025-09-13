@@ -278,7 +278,7 @@ export function NavProjects({ closeSideBar }) {
               Cancel
             </button>
             <button
-              className="rounded-3xl bg-red-600 hover:bg-[#911e1b] px-5 py-2 flex items-center gap-1"
+              className="rounded-3xl bg-red-600 hover:bg-[#911e1b] px-5 py-2 flex items-center gap-1 cursor-pointer disabled:cursor-not-allowed"
               onClick={() => handleDeleteProject(deleteModalData?._id)}
               disabled={modalActionLoading}
             >

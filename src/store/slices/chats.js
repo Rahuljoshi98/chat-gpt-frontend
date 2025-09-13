@@ -26,7 +26,18 @@ const initialState = {
 export const chatSlice = createSlice({
   name: "chats",
   initialState,
-  reducers: {},
+  reducers: {
+    updateChat: (state, action) => {
+      state.allChats = state.allChats.map((chat) =>
+        chat._id === action.payload._id ? { ...chat, ...action.payload } : chat
+      );
+    },
+    removeChat: (state, action) => {
+      state.allChats = state.allChats.filter(
+        (chat) => chat._id !== action.payload
+      );
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllChats.pending, (state) => {
@@ -45,4 +56,5 @@ export const chatSlice = createSlice({
   },
 });
 
+export const { updateChat, removeChat } = chatSlice.actions;
 export default chatSlice.reducer;
