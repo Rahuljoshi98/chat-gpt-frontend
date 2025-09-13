@@ -16,6 +16,7 @@ import {
   Plus,
   AudioLines,
   Copy,
+  ArrowUp,
 } from "lucide-react";
 import { createHighlighter } from "shiki";
 import axios from "axios";
@@ -232,9 +233,20 @@ export default function ChatPage() {
                 <button className="h-10 w-10 rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ffffff1a]">
                   <Mic className="h-5 w-5 text-white" />
                 </button>
-                <button className="h-10 w-10 rounded-full flex items-center justify-center cursor-pointer hover:bg-[#ffffff1a]">
-                  <AudioLines className="h-5 w-5 text-white" />
-                </button>
+                <>
+                  {textValue ? (
+                    <button
+                      className="h-10 w-10 rounded-full flex items-center justify-center cursor-pointer bg-white"
+                      onClick={() => handleChat()}
+                    >
+                      <ArrowUp className="h-5 w-5 text-[#000]" />
+                    </button>
+                  ) : (
+                    <button className="h-10 w-10 rounded-full flex items-center justify-center hover:bg-[#ffffff1a] cursor-not-allowed">
+                      <AudioLines className="h-5 w-5 text-white" />
+                    </button>
+                  )}
+                </>
               </div>
             </div>
           </div>
