@@ -164,7 +164,13 @@ export default function ChatPage({ chatId: initialChatId }) {
       setIsThinking(true);
 
       if (!chatId) {
-        const res = await axios.post(apiKeys.chats, { text: userMsg.content });
+        const res = await axios.post(
+          apiKeys.chats,
+          { text: userMsg.content },
+          {
+            withCredentials: true,
+          }
+        );
         const newChatId = res?.data?.data?.chatId;
         if (newChatId) {
           router.push(`/c/${newChatId}`);
