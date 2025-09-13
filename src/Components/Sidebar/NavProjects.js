@@ -108,7 +108,7 @@ const ProjectItem = memo(function ProjectItem({
             />
           ) : (
             <a
-              className="group-data-[collapsible=icon]:hidden sm:text-[16px] text-sm truncate flex-1 flex items-center gap-1 w-full"
+              className="group-data-[collapsible=icon]:hidden sm:text-[16px] text-sm truncate flex-1 flex items-center gap-2 w-full"
               href={`/c/${item._id}`}
               onClick={() => handleSideBar()}
             >
