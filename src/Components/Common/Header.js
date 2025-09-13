@@ -24,18 +24,28 @@ import { useDispatch } from "react-redux";
 import { getProjectsList } from "@/src/store/slices/project";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { clearUserDetails, setUserDetails } from "@/src/store/slices/user";
 
 function Header() {
   const isMobile = useIsMobile();
   const [openMobile, setOpenMobile] = useState(false);
-  const { isSignedIn, isLoaded } = useUser();
+  const { isSignedIn, isLoaded, user } = useUser();
+  console.log("user", user);
   const dispatch = useDispatch();
   const router = useRouter();
 
   useEffect(() => {
-    if (isSignedIn && isLoaded) {
+    if (isSignedIn && isLoaded && user) {
       dispatch(getProjectsList());
+      dispatch(
+        setUserDetails({
+          email: user?.primaryEmailAddress?.emailAddress || "",
+          name: `${user?.fullName}`.trim(),
+          image: user?.imageUrl || "",
+        })
+      );
     } else if (isLoaded && !isSignedIn) {
+      dispatch(clearUserDetails());
       router.push("/");
     }
   }, [isSignedIn, isLoaded]);

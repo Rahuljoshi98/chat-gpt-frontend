@@ -34,13 +34,6 @@ const SIDEBAR_WIDTH_MOBILE = "18rem";
 const side = "left";
 
 const data = {
-  user: {
-    name: "Rahul Joshi",
-    email: "test@gmail.com",
-    avatar: "/avatars/shadcn.jpg",
-    subscription_type: "Free",
-    paid: false,
-  },
   projects: [
     { name: "Design Engineering", url: "#", id: "1" },
     { name: "Sales & Marketing", url: "#", id: "2" },
@@ -102,7 +95,7 @@ export function AppSidebar({ openMobile, setOpenMobile, ...props }) {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-[#ffffff0d]">
-        <NavUser user={data?.user} />
+        <NavUser />
       </SidebarFooter>
     </>
   );
