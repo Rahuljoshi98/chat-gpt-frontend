@@ -80,7 +80,7 @@ export function NavUser() {
           >
             <DropdownMenuGroup>
               <DropdownMenuItem
-                className={`pointer-events-none sm:text-[16px] text-sm text-[#afafaf]`}
+                className={`sm:text-[16px] text-sm text-white opacity-50 cursor-not-allowed`}
               >
                 <CircleUserRound className="text-[#afafaf]" />
                 {userDetails?.email}
