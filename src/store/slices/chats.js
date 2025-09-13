@@ -17,10 +17,26 @@ export const getAllChats = createAsyncThunk(
   }
 );
 
+export const getChatHistory = createAsyncThunk(
+  "data/gethistory",
+  async function gethistory(payload, thunkapi) {
+    try {
+      const { id = null } = payload;
+      const response = await axios.get(`${apiKeys.chats}/${id}`, {
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      handleErrorMessage(error);
+    }
+  }
+);
+
 const initialState = {
   loading: false,
   error: null,
   allChats: [],
+  chatHistory: [],
 };
 
 export const chatSlice = createSlice({
@@ -40,6 +56,7 @@ export const chatSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // get all chats
       .addCase(getAllChats.pending, (state) => {
         state.loading = true;
         state.allChats = [];
@@ -52,6 +69,20 @@ export const chatSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Something went wrong";
         state.allChats = [];
+      })
+      // get chat history
+      .addCase(getChatHistory.pending, (state) => {
+        state.loading = true;
+        state.chatHistory = [];
+      })
+      .addCase(getChatHistory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.chatHistory = action?.payload?.data || [];
+      })
+      .addCase(getChatHistory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Something went wrong";
+        state.chatHistory = [];
       });
   },
 });

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
+import { useParams, useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,8 +23,13 @@ import { createHighlighter } from "shiki";
 import axios from "axios";
 import apiKeys from "@/src/helpers/api/apiKeys";
 import { handleErrorMessage } from "@/src/helpers/CommonFunctions";
-import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { getChatHistory } from "@/src/store/slices/chats";
+import { ChatSelector } from "./selector";
 
+// -----------------------------
+// Code Block Renderer
+// -----------------------------
 function CodeBlock({ language = "jsx", code }) {
   const [highlighted, setHighlighted] = useState("");
 
@@ -66,25 +72,53 @@ function CodeBlock({ language = "jsx", code }) {
   );
 }
 
+// -----------------------------
+// Chat Page Component
+// -----------------------------
 export default function ChatPage({ chatId: initialChatId }) {
-  const [chatId, setChatId] = useState(initialChatId || null);
+  const params = useParams();
+  const chatId = useMemo(
+    () => initialChatId || params?.slug || null,
+    [initialChatId, params?.slug]
+  );
+
+  const selector = ChatSelector();
+  const { chatHistory } = useSelector(selector);
+
   const [textValue, setTextValue] = useState("");
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Hello 👋 How can I help you today?" },
   ]);
+  const [isThinking, setIsThinking] = useState(false);
+
   const router = useRouter();
   const textareaRef = useRef(null);
   const chatContainerRef = useRef(null);
   const bottomRef = useRef(null);
   const maxHeight = 150;
+  const dispatch = useDispatch();
 
+  // -----------------------------
+  // Helpers
+  // -----------------------------
   const scrollToBottom = (behavior = "smooth") => {
     bottomRef.current?.scrollIntoView({ behavior });
   };
 
   useEffect(() => {
+    if (chatHistory && chatHistory.length > 0) {
+      setMessages((prev) => [...prev, ...chatHistory]);
+    }
+  }, [chatHistory]);
+
+  useEffect(() => {
     scrollToBottom("smooth");
   }, [messages]);
+
+  useEffect(() => {
+    if (!chatId) return;
+    dispatch(getChatHistory({ id: chatId }));
+  }, [chatId, dispatch]);
 
   const resizeTextarea = () => {
     const textarea = textareaRef.current;
@@ -112,20 +146,23 @@ export default function ChatPage({ chatId: initialChatId }) {
     }
   }, []);
 
+  // -----------------------------
+  // Send Message
+  // -----------------------------
   const handleChat = async () => {
-    if (!textValue.trim()) return;
+    if (!textValue.trim() || isThinking) return;
 
     const userMsg = { role: "user", content: textValue };
     setMessages((prev) => [...prev, userMsg]);
     setTextValue("");
 
-    // Reset textarea height when cleared
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
     }
 
     try {
-      // first time
+      setIsThinking(true);
+
       if (!chatId) {
         const res = await axios.post(apiKeys.chats, { text: userMsg.content });
         const newChatId = res?.data?.data?.chatId;
@@ -138,6 +175,7 @@ export default function ChatPage({ chatId: initialChatId }) {
           { chatId, text: userMsg.content },
           { withCredentials: true }
         );
+
         if (res.data?.success && res.data?.data) {
           const { role, content } = res.data.data;
           const newMsg =
@@ -154,6 +192,8 @@ export default function ChatPage({ chatId: initialChatId }) {
       }
     } catch (error) {
       handleErrorMessage(error);
+    } finally {
+      setIsThinking(false);
     }
   };
 
@@ -164,6 +204,9 @@ export default function ChatPage({ chatId: initialChatId }) {
     }
   };
 
+  // -----------------------------
+  // Render
+  // -----------------------------
   return (
     <div className="h-[calc(100dvh-70px)] flex flex-col text-white">
       {/* Chat messages */}
@@ -194,7 +237,19 @@ export default function ChatPage({ chatId: initialChatId }) {
               )}
             </div>
           ))}
-          {/* Invisible anchor for scrolling */}
+
+          {/* Typing Indicator */}
+          {isThinking && (
+            <div className="flex justify-start">
+              <div className="px-4 py-3 sm:text-lg text-sm text-[#ddd] flex items-center gap-1">
+                Thinking
+                <span className="animate-pulse">.</span>
+                <span className="animate-pulse delay-150">.</span>
+                <span className="animate-pulse delay-300">.</span>
+              </div>
+            </div>
+          )}
+
           <div ref={bottomRef} />
         </div>
       </div>
@@ -211,6 +266,7 @@ export default function ChatPage({ chatId: initialChatId }) {
               className="custom-scrollbar w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 sm:text-lg text-sm placeholder:text-[#A0A0A0] resize-none px-3 py-1 text-white"
               rows={1}
               onKeyDown={handleKeyPress}
+              disabled={isThinking}
             />
 
             {/* Button row */}
@@ -244,10 +300,10 @@ export default function ChatPage({ chatId: initialChatId }) {
                   <Mic className="h-5 w-5 text-white" />
                 </button>
                 <>
-                  {textValue ? (
+                  {textValue && !isThinking ? (
                     <button
                       className="h-10 w-10 rounded-full flex items-center justify-center cursor-pointer bg-white"
-                      onClick={() => handleChat()}
+                      onClick={handleChat}
                     >
                       <ArrowUp className="h-5 w-5 text-[#000]" />
                     </button>
