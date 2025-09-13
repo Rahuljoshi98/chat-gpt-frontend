@@ -25,6 +25,7 @@ import { getProjectsList } from "@/src/store/slices/project";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { clearUserDetails, setUserDetails } from "@/src/store/slices/user";
+import { getAllChats } from "@/src/store/slices/chats";
 
 function Header() {
   const isMobile = useIsMobile();
@@ -35,6 +36,7 @@ function Header() {
 
   useEffect(() => {
     if (isSignedIn && isLoaded && user) {
+      dispatch(getAllChats());
       dispatch(getProjectsList());
       dispatch(
         setUserDetails({

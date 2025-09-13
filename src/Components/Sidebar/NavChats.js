@@ -24,8 +24,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState, memo, useRef, useEffect } from "react";
+import { HeaderSelector } from "../Common/selector";
+import { useSelector } from "react-redux";
+import Link from "next/link";
 
-const ProjectItem = memo(function ProjectItem({
+const ChatItems = memo(function ChatItems({
   item,
   isEditing,
   editingValue,
@@ -58,7 +61,7 @@ const ProjectItem = memo(function ProjectItem({
   };
 
   return (
-    <SidebarMenuItem key={item.id} className="flex justify-between">
+    <SidebarMenuItem key={item._id} className="flex justify-between">
       <SidebarMenuButton asChild className="flex-1">
         <div className="w-full">
           {isEditing ? (
@@ -71,13 +74,13 @@ const ProjectItem = memo(function ProjectItem({
               className="w-full px-2 py-1.5 rounded-md  text-white text-[16px] outline-none"
             />
           ) : (
-            <a
+            <Link
               className="group-data-[collapsible=icon]:hidden sm:text-[16px] text-sm truncate flex-1"
-              href={item?.url}
+              href={`/c/${item._id}`}
               onClick={() => handleSideBar()}
             >
-              {item.name}
-            </a>
+              {item?.title}
+            </Link>
           )}
         </div>
       </SidebarMenuButton>
@@ -124,7 +127,7 @@ const ProjectItem = memo(function ProjectItem({
   );
 });
 
-export function NavChats({ projects: initialProjects, closeSideBar }) {
+export function NavChats({ closeSideBar }) {
   const { isMobile } = useSidebar();
 
   const handleSideBar = () => {
@@ -133,12 +136,21 @@ export function NavChats({ projects: initialProjects, closeSideBar }) {
     }
   };
 
-  const [projects, setProjects] = useState(initialProjects);
+  const selector = HeaderSelector();
+  const { allChats } = useSelector(selector);
+
+  const [chats, setChats] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [deleteModalData, setDeleteModalData] = useState({});
 
   const [editingId, setEditingId] = useState(null);
   const [editingValue, setEditingValue] = useState("");
+
+  useEffect(() => {
+    if (allChats?.length > 0) {
+      setChats(allChats);
+    }
+  }, [allChats]);
 
   const handleDeleteModal = (open) => {
     setOpenDeleteModal(open);
@@ -153,15 +165,17 @@ export function NavChats({ projects: initialProjects, closeSideBar }) {
   };
 
   const handleStartEdit = (item) => {
-    setEditingId(item.id);
-    setEditingValue(item.name);
+    setEditingId(item._id);
+    setEditingValue(item?.title);
   };
 
   const handleSave = (cancel = false) => {
     if (!cancel) {
-      setProjects((prev) =>
+      setChats((prev) =>
         prev.map((p) =>
-          p.id === editingId ? { ...p, name: editingValue.trim() || p.name } : p
+          p._id === editingId
+            ? { ...p, title: editingValue.trim() || p.title }
+            : p
         )
       );
     }
@@ -185,7 +199,7 @@ export function NavChats({ projects: initialProjects, closeSideBar }) {
 
           <div className="mt-2">
             <p className="text-lg font-normal">
-              This will delete {deleteModalData?.name}.
+              This will delete {deleteModalData?.title}.
             </p>
             <p className="sm:text-[16px] text-sm text-[#afafaf] mt-1">
               Visit <span className="underline">settings</span> to delete any
@@ -213,11 +227,11 @@ export function NavChats({ projects: initialProjects, closeSideBar }) {
           Chats
         </SidebarGroupLabel>
         <SidebarMenu>
-          {projects?.map((item) => (
-            <ProjectItem
-              key={item.id}
+          {chats?.map((item) => (
+            <ChatItems
+              key={item._id}
               item={item}
-              isEditing={editingId === item.id}
+              isEditing={editingId === item._id}
               editingValue={editingValue}
               onChange={setEditingValue}
               onSave={handleSave}

@@ -22,6 +22,7 @@ import { createHighlighter } from "shiki";
 import axios from "axios";
 import apiKeys from "@/src/helpers/api/apiKeys";
 import { handleErrorMessage } from "@/src/helpers/CommonFunctions";
+import { useRouter } from "next/navigation";
 
 function CodeBlock({ language = "jsx", code }) {
   const [highlighted, setHighlighted] = useState("");
@@ -65,11 +66,13 @@ function CodeBlock({ language = "jsx", code }) {
   );
 }
 
-export default function ChatPage() {
+export default function ChatPage({ chatId: initialChatId }) {
+  const [chatId, setChatId] = useState(initialChatId || null);
   const [textValue, setTextValue] = useState("");
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Hello 👋 How can I help you today?" },
   ]);
+  const router = useRouter();
   const textareaRef = useRef(null);
   const chatContainerRef = useRef(null);
   const bottomRef = useRef(null);
@@ -122,25 +125,32 @@ export default function ChatPage() {
     }
 
     try {
-      const res = await axios.post(
-        apiKeys.chats,
-        { text: userMsg.content },
-        { withCredentials: true }
-      );
-
-      if (res.data?.success && res.data?.data) {
-        const { role, content } = res.data.data;
-        const newMsg =
-          content.type === "code"
-            ? {
-                role,
-                type: "code",
-                language: content.language || "jsx",
-                content: content.data,
-              }
-            : { role, content: content.data };
-
-        setMessages((prev) => [...prev, newMsg]);
+      // first time
+      if (!chatId) {
+        const res = await axios.post(apiKeys.chats, { text: userMsg.content });
+        const newChatId = res?.data?.data?.chatId;
+        if (newChatId) {
+          router.push(`/c/${newChatId}`);
+        }
+      } else {
+        const res = await axios.post(
+          apiKeys.chats,
+          { chatId, text: userMsg.content },
+          { withCredentials: true }
+        );
+        if (res.data?.success && res.data?.data) {
+          const { role, content } = res.data.data;
+          const newMsg =
+            content.type === "code"
+              ? {
+                  role,
+                  type: "code",
+                  language: content.language || "jsx",
+                  content: content.data,
+                }
+              : { role, content: content.data };
+          setMessages((prev) => [...prev, newMsg]);
+        }
       }
     } catch (error) {
       handleErrorMessage(error);

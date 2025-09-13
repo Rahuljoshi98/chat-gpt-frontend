@@ -34,7 +34,6 @@ const SIDEBAR_WIDTH_MOBILE = "18rem";
 const side = "left";
 
 const data = {
-  projects: [],
   navMainItems1: [
     { name: "New chat", url: "#", icon: NewChatIcon },
     { name: "Library", url: "#", icon: LibraryIcon },
@@ -46,6 +45,7 @@ const data = {
 };
 
 export function AppSidebar({ openMobile, setOpenMobile, ...props }) {
+  debugger;
   const { toggleSidebar, state } = useSidebar();
   const expanded = "[--sidebar-width:18rem]";
   const collapsed = "[--sidebar-width-icon:4rem]";
@@ -87,7 +87,7 @@ export function AppSidebar({ openMobile, setOpenMobile, ...props }) {
         <NavMain closeSideBar={closeSideBar} navItems={data?.navMainItems1} />
         <NavMain closeSideBar={closeSideBar} navItems={data?.navMainItems2} />
         <NavProjects closeSideBar={closeSideBar} />
-        <NavChats closeSideBar={closeSideBar} projects={data?.projects} />
+        <NavChats closeSideBar={closeSideBar} />
       </SidebarContent>
 
       <SidebarFooter className="border-t border-[#ffffff0d]">

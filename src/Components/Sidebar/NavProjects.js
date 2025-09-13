@@ -41,6 +41,7 @@ import {
   removeProject,
   updateProject,
 } from "@/src/store/slices/project";
+import Link from "next/link";
 
 const ProjectItem = memo(function ProjectItem({
   item,
@@ -107,14 +108,14 @@ const ProjectItem = memo(function ProjectItem({
               className="w-full px-2 py-1.5 rounded-md text-white text-[16px] outline-none"
             />
           ) : (
-            <a
+            <Link
               className="group-data-[collapsible=icon]:hidden sm:text-[16px] text-sm truncate flex-1 flex items-center gap-2 w-full"
               href={`/c/${item._id}`}
               onClick={() => handleSideBar()}
             >
               <FolderClosed className="h-5 w-5 text-white flex-shrink-0" />
               {item.name}
-            </a>
+            </Link>
           )}
         </div>
       </SidebarMenuButton>
