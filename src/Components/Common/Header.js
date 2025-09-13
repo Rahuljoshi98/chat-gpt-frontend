@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { AppSidebar } from "../Sidebar";
-import { HamIcon } from "./Icons";
+import { ChatGptGoIcon, ChatGptReact, HamIcon } from "./Icons";
 import { useDispatch } from "react-redux";
 import { getProjectsList } from "@/src/store/slices/project";
 import { useUser } from "@clerk/nextjs";
@@ -69,21 +69,45 @@ function Header() {
                 size="lg"
                 className="hover:bg-[#ffffff1a] px-3 py-2 rounded-lg text-[16px] flex items-center gap-1 cursor-pointer data-[state=open]:bg-[#ffffff1a] outline-none focus:outline-none"
               >
-                <div className="">ChatGPT</div>
+                <div className="text-lg">ChatGPT</div>
                 <ChevronDown className="h-5 w-5 text-white" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg bg-[#353535]"
+              className="w-fit rounded-lg bg-[#353535]"
               side={"bottom"}
               align={"start"}
               sideOffset={2}
               alignOffset={0}
             >
               <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <CircleUserRound className="text-[#afafaf]" />
-                  asdfasdf
+                <DropdownMenuItem className={`opacity-50 cursor-not-allowed`}>
+                  <div className="flex items-center gap-2">
+                    <ChatGptGoIcon />
+                    <div>
+                      <p className="text-white text-lg font-medium">
+                        ChatGPT Go
+                      </p>
+                      <p className="text-sm font-normal text-[#afafaf]">
+                        Our smartest model & more
+                      </p>
+                    </div>
+                    <button className=" rounded-xl bg-[#212121] hover:bg-[#2f2f2f] text-sm cursor-pointer text-medium border-1 border-[#ffffff26] hover:shadow px-3  py-1">
+                      Upgrade
+                    </button>
+                  </div>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem className={`opacity-50 cursor-not-allowed`}>
+                  <div className="flex items-center gap-2">
+                    <ChatGptReact />
+                    <div>
+                      <p className="text-white text-lg font-medium">ChatGPT</p>
+                      <p className="text-sm font-normal text-[#afafaf]">
+                        Great for everyday tasks
+                      </p>
+                    </div>
+                  </div>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
