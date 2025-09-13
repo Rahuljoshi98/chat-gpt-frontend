@@ -34,11 +34,7 @@ const SIDEBAR_WIDTH_MOBILE = "18rem";
 const side = "left";
 
 const data = {
-  projects: [
-    { name: "Design Engineering", url: "#", id: "1" },
-    { name: "Sales & Marketing", url: "#", id: "2" },
-    { name: "Travel", url: "#", id: "3" },
-  ],
+  projects: [],
   navMainItems1: [
     { name: "New chat", url: "#", icon: NewChatIcon },
     { name: "Library", url: "#", icon: LibraryIcon },
