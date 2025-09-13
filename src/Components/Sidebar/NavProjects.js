@@ -27,7 +27,7 @@ import {
 import axios from "axios";
 import apiKeys from "@/src/helpers/api/apiKeys";
 import { handleErrorMessage } from "@/src/helpers/CommonFunctions";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { HeaderSelector } from "../Common/selector";
 import {
   DropdownMenu,
@@ -36,11 +36,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { addProject, removeProject } from "@/src/store/slices/project";
 
 export function NavProjects() {
   const { isMobile } = useSidebar();
   // data from store
   const selector = HeaderSelector();
+  const dispatch = useDispatch();
   const { projectList } = useSelector(selector);
 
   const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] =
@@ -85,6 +87,7 @@ export function NavProjects() {
       const res = await axios.post(apiKeys.projects, payload, {
         withCredentials: true,
       });
+      dispatch(addProject(res?.data?.data || []));
       handleCreateProjectModal();
     } catch (error) {
       handleErrorMessage(error);
@@ -99,6 +102,7 @@ export function NavProjects() {
       const res = await axios.delete(`${apiKeys.projects}/${id}`, {
         withCredentials: true,
       });
+      dispatch(removeProject(id));
       handleDeleteModal();
     } catch (error) {
       handleErrorMessage(error);

@@ -26,7 +26,19 @@ const initialState = {
 export const projectSlice = createSlice({
   name: "project",
   initialState,
-  reducers: {},
+  reducers: {
+    addProject: (state, action) => {
+      state.projectsList = [
+        action.payload,
+        ...state.projectsList.filter((proj) => proj._id !== action.payload._id),
+      ];
+    },
+    removeProject: (state, action) => {
+      state.projectsList = state.projectsList?.filter(
+        (proj) => proj._id !== action.payload
+      );
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getProjectsList.pending, (state) => {
@@ -45,4 +57,5 @@ export const projectSlice = createSlice({
   },
 });
 
+export const { addProject, removeProject } = projectSlice.actions;
 export default projectSlice.reducer;
