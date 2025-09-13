@@ -38,6 +38,11 @@ export const projectSlice = createSlice({
         (proj) => proj._id !== action.payload
       );
     },
+    updateProject: (state, action) => {
+      state.projectsList = state.projectsList.map((proj) =>
+        proj._id === action.payload._id ? action.payload : proj
+      );
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -57,5 +62,6 @@ export const projectSlice = createSlice({
   },
 });
 
-export const { addProject, removeProject } = projectSlice.actions;
+export const { addProject, removeProject, updateProject } =
+  projectSlice.actions;
 export default projectSlice.reducer;

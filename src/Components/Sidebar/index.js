@@ -97,7 +97,7 @@ export function AppSidebar({ openMobile, setOpenMobile, ...props }) {
       <SidebarContent className="gap-0">
         <NavMain closeSideBar={closeSideBar} navItems={data?.navMainItems1} />
         <NavMain closeSideBar={closeSideBar} navItems={data?.navMainItems2} />
-        <NavProjects />
+        <NavProjects closeSideBar={closeSideBar} />
         <NavChats closeSideBar={closeSideBar} projects={data?.projects} />
       </SidebarContent>
 
