@@ -1,9 +1,20 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Logo } from "./Icons";
 import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 function SignUpHeader() {
+  const { isLoaded, isSignedIn } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      router.push("/c");
+    }
+  }, [isLoaded, isSignedIn]);
+
   return (
     <>
       <div className="z-10 bg-[#212121] px-6 sticky top-0 left-0 py-2 border-b border-[#ffffff0d] flex justify-between items-center">
