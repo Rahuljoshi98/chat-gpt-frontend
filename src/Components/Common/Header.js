@@ -22,10 +22,11 @@ import { AppSidebar } from "../Sidebar";
 import { ChatGptGoIcon, ChatGptReact, HamIcon } from "./Icons";
 import { useDispatch } from "react-redux";
 import { getProjectsList, whoAmI } from "@/src/store/slices/project";
-import { useUser } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { clearUserDetails, setUserDetails } from "@/src/store/slices/user";
 import { getAllChats } from "@/src/store/slices/chats";
+import { handleErrorMessage } from "@/src/helpers/CommonFunctions";
 
 function Header() {
   const isMobile = useIsMobile();
@@ -33,12 +34,22 @@ function Header() {
   const { isSignedIn, isLoaded, user } = useUser();
   const dispatch = useDispatch();
   const router = useRouter();
+  const { getToken } = useAuth();
+
+  const fetchDetails = async () => {
+    try {
+      const token = await getToken();
+      dispatch(whoAmI({ token }));
+    } catch (error) {
+      handleErrorMessage(error);
+    }
+  };
 
   useEffect(() => {
     if (isSignedIn && isLoaded && user) {
       dispatch(getAllChats());
       dispatch(getProjectsList());
-      dispatch(whoAmI());
+      fetchDetails();
       dispatch(
         setUserDetails({
           email: user?.primaryEmailAddress?.emailAddress || "",

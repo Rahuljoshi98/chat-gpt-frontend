@@ -7,17 +7,16 @@ import axios from "axios";
 export const whoAmI = createAsyncThunk(
   "data/whoAMi",
   async function whoAmI(payload, thunkapi) {
+    const { token } = payload;
+    // const url = "http://localhost:5000/whoami";
+    const url =
+      "https://chat-gpt-backend-production-dc72.up.railway.app/whoami";
     try {
-      const { getToken } = useAuth();
-      const token = await getToken();
-      const response = await axios.get(
-        `https://chat-gpt-backend-production-dc72.up.railway.app/whoami`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // 👈 send token manually
-          },
-        }
-      );
+      const response = await axios.get(`${url}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // 👈 send token manually
+        },
+      });
       return response.data;
     } catch (error) {
       handleErrorMessage(error);
