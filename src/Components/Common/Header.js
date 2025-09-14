@@ -39,17 +39,9 @@ function Header() {
   const fetchDetails = async () => {
     try {
       const token = await getToken();
+      dispatch(getAllChats({ token }));
       dispatch(whoAmI({ token }));
-    } catch (error) {
-      handleErrorMessage(error);
-    }
-  };
-
-  useEffect(() => {
-    if (isSignedIn && isLoaded && user) {
-      dispatch(getAllChats());
-      dispatch(getProjectsList());
-      fetchDetails();
+      dispatch(getProjectsList({ token }));
       dispatch(
         setUserDetails({
           email: user?.primaryEmailAddress?.emailAddress || "",
@@ -57,6 +49,14 @@ function Header() {
           image: user?.imageUrl || "",
         })
       );
+    } catch (error) {
+      handleErrorMessage(error);
+    }
+  };
+
+  useEffect(() => {
+    if (isSignedIn && isLoaded && user) {
+      fetchDetails();
     } else if (isLoaded && !isSignedIn) {
       dispatch(clearUserDetails());
       router.push("/");

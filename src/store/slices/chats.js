@@ -6,9 +6,12 @@ import axios from "axios";
 export const getAllChats = createAsyncThunk(
   "data/getchats",
   async function getChats(payload, thunkapi) {
+    const { token } = payload;
     try {
       const response = await axios.get(`${apiKeys.chats}`, {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       return response.data;
     } catch (error) {
