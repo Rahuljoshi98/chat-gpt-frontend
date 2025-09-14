@@ -43,6 +43,7 @@ import {
 } from "@/src/store/slices/project";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 const ProjectItem = memo(function ProjectItem({
   item,
@@ -167,6 +168,7 @@ export function NavProjects({ closeSideBar, activeChatId }) {
   const dispatch = useDispatch();
   const { projectList } = useSelector(selector);
   const { getToken } = useAuth();
+  const router = useRouter();
 
   const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] =
     useState(false);
@@ -206,6 +208,12 @@ export function NavProjects({ closeSideBar, activeChatId }) {
       });
       dispatch(removeProject(_id));
       handleDeleteModal(false);
+      const remaingProject = projectList?.filter((proj) => proj._id !== _id);
+      if (remaingProject?.length > 0) {
+        router.push(`/c/${remaingProject[0]._id}`);
+      } else {
+        router.push("/c");
+      }
     } catch (error) {
       handleErrorMessage(error);
     } finally {
