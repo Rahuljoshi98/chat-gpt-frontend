@@ -24,9 +24,11 @@ export const getChatHistory = createAsyncThunk(
   "data/gethistory",
   async function gethistory(payload, thunkapi) {
     try {
-      const { id = null } = payload;
+      const { id = null, token } = payload;
       const response = await axios.get(`${apiKeys.chats}/${id}`, {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       return response.data;
     } catch (error) {

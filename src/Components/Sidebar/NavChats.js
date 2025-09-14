@@ -38,6 +38,7 @@ import axios from "axios";
 import apiKeys from "@/src/helpers/api/apiKeys";
 import { handleErrorMessage } from "@/src/helpers/CommonFunctions";
 import { updateChat, removeChat } from "@/src/store/slices/chats";
+import { useAuth } from "@clerk/nextjs";
 
 const ChatItems = memo(function ChatItems({
   item,
@@ -190,10 +191,13 @@ export function NavChats({ closeSideBar }) {
   };
 
   const handleDeleteChat = async (_id) => {
+    let token = sessionStorage.getItem("token");
     setModalActionLoading(true);
     try {
       await axios.delete(`${apiKeys.chats}/${_id}`, {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       dispatch(removeChat(_id));
       handleDeleteModal(false);
@@ -210,6 +214,8 @@ export function NavChats({ closeSideBar }) {
   };
 
   const handleSave = async (cancel = false) => {
+    let token = sessionStorage.getItem("token");
+    setModalActionLoading(true);
     if (!cancel && editingId) {
       try {
         const payload = { title: editingValue.trim() };
@@ -217,7 +223,9 @@ export function NavChats({ closeSideBar }) {
           `${apiKeys.chats}/${editingId}`,
           payload,
           {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
         dispatch(updateChat(res?.data?.data || []));

@@ -4,32 +4,15 @@ import { useAuth } from "@clerk/nextjs";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const whoAmI = createAsyncThunk(
-  "data/whoAMi",
-  async function whoAmI(payload, thunkapi) {
-    const { token } = payload;
-    // const url = "http://localhost:5000/whoami";
-    const url =
-      "https://chat-gpt-backend-production-dc72.up.railway.app/whoami";
-    try {
-      const response = await axios.get(`${url}`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // 👈 send token manually
-        },
-      });
-      return response.data;
-    } catch (error) {
-      handleErrorMessage(error);
-    }
-  }
-);
-
 export const getProjectsList = createAsyncThunk(
   "data/projectList",
   async function getDetails(payload, thunkapi) {
+    const { token } = payload;
     try {
       const response = await axios.get(`${apiKeys.projects}`, {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`, // 👈 send token manually
+        },
       });
       return response.data;
     } catch (error) {

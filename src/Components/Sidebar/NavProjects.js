@@ -189,9 +189,12 @@ export function NavProjects({ closeSideBar }) {
 
   const handleDeleteProject = async (_id) => {
     setModalActionLoading(true);
+    let token = sessionStorage.getItem("token");
     try {
       await axios.delete(`${apiKeys.projects}/${_id}`, {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       dispatch(removeProject(_id));
       handleDeleteModal(false);
@@ -213,9 +216,12 @@ export function NavProjects({ closeSideBar }) {
   const handleCreateProject = async () => {
     setModalActionLoading(true);
     try {
+      let token = sessionStorage.getItem("token");
       const payload = { name: projectName };
       const res = await axios.post(apiKeys.projects, payload, {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       dispatch(addProject(res?.data?.data || []));
       handleCreateProjectModal(false);
@@ -235,12 +241,14 @@ export function NavProjects({ closeSideBar }) {
     if (!cancel && editingId) {
       try {
         const payload = { name: editingValue.trim() };
-
+        let token = sessionStorage.getItem("token");
         const res = await axios.patch(
           `${apiKeys.projects}/${editingId}`,
           payload,
           {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
         dispatch(updateProject(res?.data?.data || {}));

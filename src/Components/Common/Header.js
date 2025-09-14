@@ -21,7 +21,7 @@ import React, { useEffect, useState } from "react";
 import { AppSidebar } from "../Sidebar";
 import { ChatGptGoIcon, ChatGptReact, HamIcon } from "./Icons";
 import { useDispatch } from "react-redux";
-import { getProjectsList, whoAmI } from "@/src/store/slices/project";
+import { getProjectsList } from "@/src/store/slices/project";
 import { useAuth, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { clearUserDetails, setUserDetails } from "@/src/store/slices/user";
@@ -39,8 +39,8 @@ function Header() {
   const fetchDetails = async () => {
     try {
       const token = await getToken();
+      sessionStorage.setItem("token", token);
       dispatch(getAllChats({ token }));
-      dispatch(whoAmI({ token }));
       dispatch(getProjectsList({ token }));
       dispatch(
         setUserDetails({

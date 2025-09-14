@@ -26,6 +26,7 @@ import { handleErrorMessage } from "@/src/helpers/CommonFunctions";
 import { useDispatch, useSelector } from "react-redux";
 import { getChatHistory } from "@/src/store/slices/chats";
 import { ChatSelector } from "./selector";
+import { useAuth, useUser } from "@clerk/nextjs";
 
 // -----------------------------
 // Code Block Renderer
@@ -97,6 +98,8 @@ export default function ChatPage({ chatId: initialChatId }) {
   const bottomRef = useRef(null);
   const maxHeight = 150;
   const dispatch = useDispatch();
+  const { isSignedIn, isLoaded, user } = useUser();
+  const { getToken } = useAuth();
 
   // -----------------------------
   // Helpers
@@ -115,10 +118,24 @@ export default function ChatPage({ chatId: initialChatId }) {
     scrollToBottom("smooth");
   }, [messages]);
 
+  const fetchDetails = async () => {
+    try {
+      let token = sessionStorage.getItem("token");
+      if (!token) {
+        token = await getToken();
+      }
+      dispatch(getChatHistory({ id: chatId, token }));
+    } catch (error) {
+      handleErrorMessage();
+    }
+  };
+
   useEffect(() => {
     if (!chatId) return;
-    dispatch(getChatHistory({ id: chatId }));
-  }, [chatId, dispatch]);
+    if (isLoaded && user) {
+      fetchDetails();
+    }
+  }, [chatId, dispatch, isLoaded, user]);
 
   const resizeTextarea = () => {
     const textarea = textareaRef.current;
@@ -162,13 +179,18 @@ export default function ChatPage({ chatId: initialChatId }) {
 
     try {
       setIsThinking(true);
-
+      let token = sessionStorage.getItem("token");
+      if (!token) {
+        token = await getToken();
+      }
       if (!chatId) {
         const res = await axios.post(
           apiKeys.chats,
           { text: userMsg.content },
           {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
         const newChatId = res?.data?.data?.chatId;
@@ -179,7 +201,11 @@ export default function ChatPage({ chatId: initialChatId }) {
         const res = await axios.post(
           apiKeys.chats,
           { chatId, text: userMsg.content },
-          { withCredentials: true }
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
 
         if (res.data?.success && res.data?.data) {
