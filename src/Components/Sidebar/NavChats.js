@@ -233,7 +233,6 @@ export function NavChats({ closeSideBar, activeChatId }) {
 
   const handleSave = async (cancel = false) => {
     const token = await getToken();
-    setModalActionLoading(true);
     if (!cancel && editingId) {
       try {
         const payload = { title: editingValue.trim() };
@@ -277,9 +276,8 @@ export function NavChats({ closeSideBar, activeChatId }) {
 
           <div className="flex items-center justify-end mt-4 gap-3 sm:text-[16px] text-sm">
             <button
-              className="rounded-3xl bg-[#212121] hover:bg-[#2f2f2f] px-5 py-2"
+              className="rounded-3xl bg-[#212121] hover:bg-[#2f2f2f] px-5 py-2 cursor-pointer"
               onClick={() => handleDeleteModal(false)}
-              disabled={modalActionLoading}
             >
               Cancel
             </button>
