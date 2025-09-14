@@ -3,6 +3,20 @@ import { handleErrorMessage } from "@/src/helpers/CommonFunctions";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+export const whoAmI = createAsyncThunk(
+  "data/whoAMi",
+  async function whoAmI(payload, thunkapi) {
+    try {
+      const response = await axios.get(`http://localhost:5000/whoami`, {
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      handleErrorMessage(error);
+    }
+  }
+);
+
 export const getProjectsList = createAsyncThunk(
   "data/projectList",
   async function getDetails(payload, thunkapi) {

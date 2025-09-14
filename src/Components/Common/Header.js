@@ -21,7 +21,7 @@ import React, { useEffect, useState } from "react";
 import { AppSidebar } from "../Sidebar";
 import { ChatGptGoIcon, ChatGptReact, HamIcon } from "./Icons";
 import { useDispatch } from "react-redux";
-import { getProjectsList } from "@/src/store/slices/project";
+import { getProjectsList, whoAmI } from "@/src/store/slices/project";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { clearUserDetails, setUserDetails } from "@/src/store/slices/user";
@@ -38,6 +38,7 @@ function Header() {
     if (isSignedIn && isLoaded && user) {
       dispatch(getAllChats());
       dispatch(getProjectsList());
+      dispatch(whoAmI());
       dispatch(
         setUserDetails({
           email: user?.primaryEmailAddress?.emailAddress || "",
