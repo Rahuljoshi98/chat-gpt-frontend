@@ -140,8 +140,10 @@ const ProjectItem = memo(function ProjectItem({
             className="w-fit rounded-md bg-[#353535]"
             side={isMobile ? "bottom" : "right"}
             align={isMobile ? "end" : "start"}
-            sideOffset={-20}
-            alignOffset={18}
+            sideOffset={-2}
+            alignOffset={0}
+            avoidCollisions={true}
+            collisionPadding={8}
           >
             <DropdownMenuItem onClick={() => onStartEdit(item)}>
               <Pencil className="w-4 h-4 text-white" />
@@ -296,7 +298,7 @@ export function NavProjects({ closeSideBar, activeChatId }) {
           </div>
           <div className="flex items-center justify-end mt-4 gap-3 sm:text-[16px] text-sm">
             <button
-              className="rounded-3xl bg-[#212121] hover:bg-[#2f2f2f] px-5 py-2"
+              className="rounded-3xl bg-[#212121] hover:bg-[#2f2f2f] px-5 py-2 cursor-pointer"
               onClick={() => handleDeleteModal(false)}
             >
               Cancel

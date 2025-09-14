@@ -132,8 +132,10 @@ const ChatItems = memo(function ChatItems({
             className="w-fit rounded-md bg-[#353535]"
             side={isMobile ? "bottom" : "right"}
             align={isMobile ? "end" : "start"}
-            sideOffset={-20}
-            alignOffset={18}
+            sideOffset={-2}
+            alignOffset={0}
+            avoidCollisions={true}
+            collisionPadding={8}
           >
             <DropdownMenuItem
               className={`sm:text-[16px] text-sm text-white opacity-50 cursor-not-allowed`}
