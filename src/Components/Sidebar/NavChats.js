@@ -167,6 +167,7 @@ export function NavChats({ closeSideBar }) {
   const dispatch = useDispatch();
   const selector = HeaderSelector();
   const { allChats } = useSelector(selector);
+  const { getToken } = useAuth();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [deleteModalData, setDeleteModalData] = useState({});
@@ -191,7 +192,8 @@ export function NavChats({ closeSideBar }) {
   };
 
   const handleDeleteChat = async (_id) => {
-    let token = sessionStorage.getItem("token");
+    const token = await getToken();
+
     setModalActionLoading(true);
     try {
       await axios.delete(`${apiKeys.chats}/${_id}`, {
@@ -214,7 +216,7 @@ export function NavChats({ closeSideBar }) {
   };
 
   const handleSave = async (cancel = false) => {
-    let token = sessionStorage.getItem("token");
+    const token = await getToken();
     setModalActionLoading(true);
     if (!cancel && editingId) {
       try {

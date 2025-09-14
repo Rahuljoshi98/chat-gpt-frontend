@@ -42,6 +42,7 @@ import {
   updateProject,
 } from "@/src/store/slices/project";
 import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
 
 const ProjectItem = memo(function ProjectItem({
   item,
@@ -159,6 +160,7 @@ export function NavProjects({ closeSideBar }) {
   const selector = HeaderSelector();
   const dispatch = useDispatch();
   const { projectList } = useSelector(selector);
+  const { getToken } = useAuth();
 
   const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] =
     useState(false);
@@ -189,7 +191,7 @@ export function NavProjects({ closeSideBar }) {
 
   const handleDeleteProject = async (_id) => {
     setModalActionLoading(true);
-    let token = sessionStorage.getItem("token");
+    const token = await getToken();
     try {
       await axios.delete(`${apiKeys.projects}/${_id}`, {
         headers: {
@@ -216,7 +218,7 @@ export function NavProjects({ closeSideBar }) {
   const handleCreateProject = async () => {
     setModalActionLoading(true);
     try {
-      let token = sessionStorage.getItem("token");
+      const token = await getToken();
       const payload = { name: projectName };
       const res = await axios.post(apiKeys.projects, payload, {
         headers: {
@@ -241,7 +243,7 @@ export function NavProjects({ closeSideBar }) {
     if (!cancel && editingId) {
       try {
         const payload = { name: editingValue.trim() };
-        let token = sessionStorage.getItem("token");
+        const token = await getToken();
         const res = await axios.patch(
           `${apiKeys.projects}/${editingId}`,
           payload,

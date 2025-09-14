@@ -120,10 +120,7 @@ export default function ChatPage({ chatId: initialChatId }) {
 
   const fetchDetails = async () => {
     try {
-      let token = sessionStorage.getItem("token");
-      if (!token) {
-        token = await getToken();
-      }
+      const token = await getToken();
       dispatch(getChatHistory({ id: chatId, token }));
     } catch (error) {
       handleErrorMessage();
@@ -179,10 +176,7 @@ export default function ChatPage({ chatId: initialChatId }) {
 
     try {
       setIsThinking(true);
-      let token = sessionStorage.getItem("token");
-      if (!token) {
-        token = await getToken();
-      }
+      const token = await getToken();
       if (!chatId) {
         const res = await axios.post(
           apiKeys.chats,
