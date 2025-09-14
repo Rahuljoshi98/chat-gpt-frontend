@@ -281,7 +281,7 @@ export default function ChatPage({ chatId: initialChatId }) {
                 <div className="px-4 py-2 whitespace-pre-line bg-[#303030] text-white rounded-[28px] max-w-[60%] sm:text-lg text-sm border border-[#444]">
                   {msg.content}
                 </div>
-              ) : msg.type === "code" ? (
+              ) : msg.inputType === "code" || msg.type == "code" ? (
                 <div className="w-full">
                   <CodeBlock language={msg.language} code={msg.content} />
                 </div>
