@@ -51,6 +51,7 @@ const ChatItems = memo(function ChatItems({
   onDelete,
   isMobile,
   handleSideBar,
+  isActive,
 }) {
   const [hasSaved, setHasSaved] = useState(false);
   const inputRef = useRef(null);
@@ -90,7 +91,12 @@ const ChatItems = memo(function ChatItems({
   };
 
   return (
-    <SidebarMenuItem key={item._id} className="flex justify-between">
+    <SidebarMenuItem
+      key={item._id}
+      className={`flex justify-between ${
+        isActive ? "bg-[#2f2f2f] rounded-md" : ""
+      }`}
+    >
       <SidebarMenuButton asChild className="flex-1">
         <div className="w-full">
           {isEditing ? (
@@ -163,7 +169,7 @@ const ChatItems = memo(function ChatItems({
   );
 });
 
-export function NavChats({ closeSideBar }) {
+export function NavChats({ closeSideBar, activeChatId }) {
   const { isMobile } = useSidebar();
   const dispatch = useDispatch();
   const selector = HeaderSelector();
@@ -307,6 +313,7 @@ export function NavChats({ closeSideBar }) {
               onDelete={handleOpenDeleteModal}
               isMobile={isMobile}
               handleSideBar={handleSideBar}
+              isActive={activeChatId === item._id}
             />
           ))}
         </SidebarMenu>

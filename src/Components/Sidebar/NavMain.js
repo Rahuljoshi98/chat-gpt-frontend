@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 
-export function NavMain({ navItems, closeSideBar }) {
+export function NavMain({ navItems, closeSideBar, pathname }) {
   const { isMobile } = useSidebar();
 
   const handleSideBar = () => {
@@ -21,7 +21,14 @@ export function NavMain({ navItems, closeSideBar }) {
     <SidebarGroup>
       <SidebarMenu>
         {navItems?.map((item) => (
-          <SidebarMenuItem key={item.name}>
+          <SidebarMenuItem
+            key={item.name}
+            className={`flex justify-between ${
+              pathname == item?.url && pathname != "#"
+                ? "bg-[#2f2f2f] rounded-md"
+                : ""
+            }`}
+          >
             <SidebarMenuButton asChild onClick={() => handleSideBar()}>
               <Link
                 href={item.url}

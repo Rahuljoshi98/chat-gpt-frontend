@@ -29,6 +29,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { NavProjects } from "./NavProjects";
+import { usePathname } from "next/navigation";
 
 const SIDEBAR_WIDTH_MOBILE = "18rem";
 const side = "left";
@@ -45,6 +46,11 @@ const data = {
 };
 
 export function AppSidebar({ openMobile, setOpenMobile, ...props }) {
+  const pathname = usePathname();
+  const activeChatId = pathname?.startsWith("/c/")
+    ? pathname.split("/c/")[1]
+    : null;
+
   const { toggleSidebar, state } = useSidebar();
   const expanded = "[--sidebar-width:18rem]";
   const collapsed = "[--sidebar-width-icon:4rem]";
@@ -83,10 +89,18 @@ export function AppSidebar({ openMobile, setOpenMobile, ...props }) {
       </SidebarHeader>
 
       <SidebarContent className="gap-0">
-        <NavMain closeSideBar={closeSideBar} navItems={data?.navMainItems1} />
-        <NavMain closeSideBar={closeSideBar} navItems={data?.navMainItems2} />
-        <NavProjects closeSideBar={closeSideBar} />
-        <NavChats closeSideBar={closeSideBar} />
+        <NavMain
+          closeSideBar={closeSideBar}
+          navItems={data?.navMainItems1}
+          pathname={pathname}
+        />
+        <NavMain
+          closeSideBar={closeSideBar}
+          navItems={data?.navMainItems2}
+          pathname={pathname}
+        />
+        <NavProjects closeSideBar={closeSideBar} activeChatId={activeChatId} />
+        <NavChats closeSideBar={closeSideBar} activeChatId={activeChatId} />
       </SidebarContent>
 
       <SidebarFooter className="border-t border-[#ffffff0d]">

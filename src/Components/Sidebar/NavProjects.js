@@ -54,6 +54,7 @@ const ProjectItem = memo(function ProjectItem({
   onDelete,
   isMobile,
   handleSideBar,
+  isActive,
 }) {
   const [hasSaved, setHasSaved] = useState(false);
   const inputRef = useRef(null);
@@ -96,7 +97,12 @@ const ProjectItem = memo(function ProjectItem({
   };
 
   return (
-    <SidebarMenuItem key={item._id} className="flex justify-between">
+    <SidebarMenuItem
+      key={item._id}
+      className={`flex justify-between ${
+        isActive ? "bg-[#2f2f2f] rounded-md" : ""
+      }`}
+    >
       <SidebarMenuButton asChild className="flex-1">
         <div className="w-full">
           {isEditing ? (
@@ -155,7 +161,7 @@ const ProjectItem = memo(function ProjectItem({
   );
 });
 
-export function NavProjects({ closeSideBar }) {
+export function NavProjects({ closeSideBar, activeChatId }) {
   const { isMobile } = useSidebar();
   const selector = HeaderSelector();
   const dispatch = useDispatch();
@@ -384,6 +390,7 @@ export function NavProjects({ closeSideBar }) {
               onDelete={handleOpenDeleteModal}
               isMobile={isMobile}
               handleSideBar={handleSideBar}
+              isActive={activeChatId == proj._id}
             />
           ))}
         </SidebarMenu>
