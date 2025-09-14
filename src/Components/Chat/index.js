@@ -63,7 +63,7 @@ function CodeBlock({ language = "jsx", code }) {
   return (
     <div className="relative my-3 w-full border border-[#333] rounded-lg overflow-hidden bg-[#2a2a2a]">
       <div className="flex justify-between items-center bg-[#2a2a2a] px-3 py-2 text-sm text-gray-300">
-        <span>{language}</span>
+        <span>Code</span>
         <button
           onClick={handleCopy}
           className="flex items-center gap-2 text-sm hover:text-white cursor-pointer"
