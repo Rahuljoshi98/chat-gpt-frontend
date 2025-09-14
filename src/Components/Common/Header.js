@@ -49,7 +49,7 @@ function Header() {
     if (isSignedIn && isLoaded && user) {
       dispatch(getAllChats());
       dispatch(getProjectsList());
-      // fetchDetails();
+      fetchDetails();
       dispatch(
         setUserDetails({
           email: user?.primaryEmailAddress?.emailAddress || "",
