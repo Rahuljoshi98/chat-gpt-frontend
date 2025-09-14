@@ -39,6 +39,7 @@ import apiKeys from "@/src/helpers/api/apiKeys";
 import { handleErrorMessage } from "@/src/helpers/CommonFunctions";
 import { updateChat, removeChat } from "@/src/store/slices/chats";
 import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 const ChatItems = memo(function ChatItems({
   item,
@@ -168,6 +169,7 @@ export function NavChats({ closeSideBar }) {
   const selector = HeaderSelector();
   const { allChats } = useSelector(selector);
   const { getToken } = useAuth();
+  const router = useRouter();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [deleteModalData, setDeleteModalData] = useState({});
@@ -203,6 +205,12 @@ export function NavChats({ closeSideBar }) {
       });
       dispatch(removeChat(_id));
       handleDeleteModal(false);
+      const remainingChats = allChats.filter((chat) => chat._id !== _id);
+      if (remainingChats.length > 0) {
+        router.push(`/c/${remainingChats[0]._id}`);
+      } else {
+        router.push("/c");
+      }
     } catch (error) {
       handleErrorMessage(error);
     } finally {

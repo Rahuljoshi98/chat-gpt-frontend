@@ -58,6 +58,14 @@ export const chatSlice = createSlice({
         (chat) => chat._id !== action.payload
       );
     },
+    addChat: (state, action) => {
+      const { _id, title, createdAt } = action.payload;
+      const newChat = { _id, title, createdAt };
+      state.allChats = [
+        newChat,
+        ...state.allChats.filter((chat) => chat._id !== newChat._id),
+      ];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -92,5 +100,5 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { updateChat, removeChat } = chatSlice.actions;
+export const { updateChat, removeChat, addChat } = chatSlice.actions;
 export default chatSlice.reducer;

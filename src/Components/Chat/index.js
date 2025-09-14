@@ -24,7 +24,7 @@ import axios from "axios";
 import apiKeys from "@/src/helpers/api/apiKeys";
 import { handleErrorMessage } from "@/src/helpers/CommonFunctions";
 import { useDispatch, useSelector } from "react-redux";
-import { getChatHistory } from "@/src/store/slices/chats";
+import { addChat, getChatHistory } from "@/src/store/slices/chats";
 import { ChatSelector } from "./selector";
 import { useAuth, useUser } from "@clerk/nextjs";
 
@@ -128,7 +128,13 @@ export default function ChatPage({ chatId: initialChatId }) {
   };
 
   useEffect(() => {
-    if (!chatId) return;
+    if (!chatId) {
+      setMessages([
+        { role: "assistant", content: "Hello 👋 How can I help you today?" },
+      ]);
+      return;
+    }
+    setMessages([]);
     if (isLoaded && user) {
       fetchDetails();
     }
@@ -189,6 +195,13 @@ export default function ChatPage({ chatId: initialChatId }) {
         );
         const newChatId = res?.data?.data?.chatId;
         if (newChatId) {
+          const payload = res.data.data;
+          const chatData = {
+            _id: payload.chatId,
+            title: payload.title,
+            createdAt: payload.timestamp,
+          };
+          dispatch(addChat(chatData));
           router.push(`/c/${newChatId}`);
         }
       } else {
