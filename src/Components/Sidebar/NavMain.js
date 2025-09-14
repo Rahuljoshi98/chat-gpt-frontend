@@ -6,6 +6,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 export function NavMain({ navItems, closeSideBar }) {
   const { isMobile } = useSidebar();
@@ -22,14 +23,17 @@ export function NavMain({ navItems, closeSideBar }) {
         {navItems?.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild onClick={() => handleSideBar()}>
-              <a href={item.url} className="flex items-center justify-between">
+              <Link
+                href={item.url}
+                className="flex items-center justify-between"
+              >
                 <div className="flex items-center gap-2">
                   <item.icon />
                   <span className="group-data-[collapsible=icon]:hidden sm:text-[16px] text-sm">
                     {item.name}
                   </span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}

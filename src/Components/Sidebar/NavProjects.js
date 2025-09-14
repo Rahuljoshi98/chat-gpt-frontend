@@ -322,6 +322,12 @@ export function NavProjects({ closeSideBar }) {
               placeholder="Enter project name"
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key == "Enter") {
+                  e.preventDefault();
+                  handleCreateProject();
+                }
+              }}
             />
             <div className="mt-6 rounded-xl px-2 py-2 flex items-center gap-2 bg-[#414141]">
               <Lightbulb className="h-6 w-6 text-white" />
@@ -333,7 +339,7 @@ export function NavProjects({ closeSideBar }) {
           </div>
           <div className="flex items-center justify-end mt-4 gap-3 sm:text-[16px] text-sm">
             <button
-              className="rounded-3xl bg-[#f9f9f9] hover:bg-[#ececec] text-[#0d0d0d] font-medium px-4 py-1.5 flex items-center gap-1"
+              className="rounded-3xl bg-[#f9f9f9] hover:bg-[#ececec] text-[#0d0d0d] font-medium px-4 py-1.5 flex items-center gap-1 cursor-pointer"
               disabled={!projectName || modalActionLoading}
               onClick={handleCreateProject}
             >

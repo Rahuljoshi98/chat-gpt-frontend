@@ -35,7 +35,7 @@ const side = "left";
 
 const data = {
   navMainItems1: [
-    { name: "New chat", url: "#", icon: NewChatIcon },
+    { name: "New chat", url: "/c", icon: NewChatIcon },
     { name: "Library", url: "#", icon: LibraryIcon },
   ],
   navMainItems2: [
