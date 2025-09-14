@@ -18,6 +18,7 @@ import {
   AudioLines,
   Copy,
   ArrowUp,
+  Check,
 } from "lucide-react";
 import { createHighlighter } from "shiki";
 import axios from "axios";
@@ -33,6 +34,7 @@ import { useAuth, useUser } from "@clerk/nextjs";
 // -----------------------------
 function CodeBlock({ language = "jsx", code }) {
   const [highlighted, setHighlighted] = useState("");
+  const [copied, setCopied] = useState(false); // 👈 copied state
 
   useEffect(() => {
     (async () => {
@@ -50,6 +52,12 @@ function CodeBlock({ language = "jsx", code }) {
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(code);
+    setCopied(true);
+
+    // Reset after 2 sec
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   };
 
   return (
@@ -60,8 +68,16 @@ function CodeBlock({ language = "jsx", code }) {
           onClick={handleCopy}
           className="flex items-center gap-2 text-sm hover:text-white cursor-pointer"
         >
-          <Copy className="text-white h-4 w-4" />
-          Copy code
+          {copied ? (
+            <>
+              <Check className="text-white h-4 w-4" /> Copied!
+            </>
+          ) : (
+            <>
+              <Copy className="text-white h-4 w-4" />
+              Copy code
+            </>
+          )}
         </button>
       </div>
 
