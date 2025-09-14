@@ -1,5 +1,6 @@
 import apiKeys from "@/src/helpers/api/apiKeys";
 import { handleErrorMessage } from "@/src/helpers/CommonFunctions";
+import { useAuth } from "@clerk/nextjs";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -7,10 +8,14 @@ export const whoAmI = createAsyncThunk(
   "data/whoAMi",
   async function whoAmI(payload, thunkapi) {
     try {
+      const { getToken } = useAuth();
+      const token = await getToken();
       const response = await axios.get(
         `https://chat-gpt-backend-production-dc72.up.railway.app/whoami`,
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`, // 👈 send token manually
+          },
         }
       );
       return response.data;
