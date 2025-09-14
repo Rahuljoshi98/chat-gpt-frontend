@@ -7,9 +7,12 @@ export const whoAmI = createAsyncThunk(
   "data/whoAMi",
   async function whoAmI(payload, thunkapi) {
     try {
-      const response = await axios.get(`http://localhost:5000/whoami`, {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `https://chat-gpt-backend-production-dc72.up.railway.app/whoami`,
+        {
+          withCredentials: true,
+        }
+      );
       return response.data;
     } catch (error) {
       handleErrorMessage(error);
